@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login | Auditoria WMS</title>
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <main class = "page">
+            <section class = "card" aria-labelledby = "login-title">
+                
+                <!-- Cabeçalho da página de login-->
+                <header class = "card_header">
+                    <h1 id = "login-title" class = "card_title">Login</h1>
+                    <p class = "card_subtitle">Acesse sua conta</p>
+                </header>
+
+                <!-- Formulário de login-->
+                <form class = "form" action = "#" method = "post" autocomplete = "on" novalidate>
+                    <div class = "form_group">
+                        <label class = "form_label" for = "username">Usuário</label>
+                        <input
+                            class = "form_input"
+                            id = "username"
+                            name = "username"
+                            type = "text"
+                            inputmode = "text"
+                            autocomplete = "username"
+                            placeholder = "Digite seu usuário"
+                            required
+                            />
+                    </div>
+
+                    <div class = "form_group">
+                        <label class = "form_label" for = "password">Senha</label>
+                        <input
+                            class = "form_input"
+                            id = "password"
+                            name = "password"
+                            type = "password"
+                            autocomplete = "current-password"
+                            placeholder = "Digite sua senha"
+                            required
+                            />
+                    </div>
+
+                    <button class = "btn btn--primary" type = "submit">Entrar</button>
+
+                    <p class = "helper">
+                        <a class = "link" href = "#" aria-label = "Recuperar senha">Esqueci minha senha</a>
+                    </p>
+                </form>
+            </section>
+
+            <footer class = "footer">
+                <small>© Auditoria WMS • MVP 2026 | Todos os direitos reservados.</small>
+            </footer>
+        </main>
+    </body>
+</html>
