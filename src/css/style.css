@@ -7,13 +7,20 @@
 
 /* Variáveis globais */
 :root {
-    --primary: #1e3a8a;
-    --primary-houver: #1c357e;
-    --background: #f3f4f6;
+    --primary: #0ea5e9;  /* azul e-commerce */
+    --primary-hover: #0284c7;
+    
+    --background: #f8fafc;
     --card-bg: #ffffff;
-    --text: #111827;
-    --muted: #6b7280;
-    --border: #e5e7eb;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    
+    --warning: #f97316;  /* laranja ação */
+    --danger: #ef4444;   /* vermelho erro */
+    --success: #22c55e;  /* verde sucesso */
+
+    --accent: #1e293b; /* destaque neutro */
 }
 
 /* Corpo da página */
@@ -97,13 +104,13 @@ body {
     transition: background 0.2s ease;
 }
 
-.btn_primary {
+.btn--primary {
     background: var(--primary);
     color: #fff;
 }
 
-.btn_primary:hover {
-    background: var(--primary-houver);
+.btn--primary:hover {
+    background: var(--primary-hover);
 }
 
 /* Link recuperação de senha */
