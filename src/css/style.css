@@ -148,7 +148,7 @@ body {
     color: var(--muted);
 }
 
-/* Página do Operador */
+/**** PÁGINA DO OPERADOR ****/
 
 /* Banner de status de conexão */
 .banner {
@@ -217,5 +217,16 @@ font-size: 12px;
 
     .form__input {
         font-size: 16px;
+    }
+}
+
+/* Ajuste para telas maiores */
+.card--wide {
+    max-width: 720px;
+}
+
+@media (min-width: 1024px) {
+    .card--wide {
+        max-width: 900px;
     }
 }
