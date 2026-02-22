@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang = "pt-BR">
+    <head>
+       <meta charset = "UTF-8">
+         <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+        <title>Operador | WMS Modular</title>
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <div id = "netbanner" class = "banner banner--online" role = "status" aria-live = "polite">
+            <span class = "banner_dot"></span>
+            <span class = "banner_message">🟢 Sistema online</span>
+        </div>
+         <main class = "page">
+            <section class = "card" aria-labelledby ="op-title">
+                <header class = "card_header">
+                    <h1 id = "op-title" class = "card_title">Registrar ocorrência</h1>
+                   <!-- <p class = "card_subtitle">Use o coletor para informar SKU e endereço que precisam de verificação</p> -->
+                </header>
+                
+                <!-- Formulário de registro de ocorrência -->
+                <form class = "form" action = "#" method = "post" autocomplete = "off" novalidate></form>
+                
+                <!-- Campo de Área -->
+                <div class = "form_group">
+                    <label class = "form_label" for = "area">Área</label>
+                    <select class = "form_input" id = "area" name = "area" required>
+                        <option value = "" selected disabled>selecione...</option>
+                        <option value = "deposit">Depósito</option>
+                        <option value = "picking">Picking</option>
+                        <option value = "bulk">Pulmão</option>
+                    </select>
+                </div>
+                
+                <!-- Campo de SKU -->
+                <div class = "form_group">
+                    <label class = "form_label" for = "sku">SKU</label>
+                    <input
+                        class = "form_input"
+                        id = "sku"
+                        name = "sku"
+                        type = "text"
+                        inputmode = "text"
+                        autocomplete = "off"
+                        placeholder = "Escaneie ou digite o SKU"
+                        required
+                        />
+                </div>
+                
+                <!-- Campo de Endereço -->
+                <div class = "form_group">
+                    <label class = "form_label" for = "address">Endereço</label>
+                    <input
+                        class = "form_input"
+                        id = "address"
+                        name = "address"
+                        type = "text"
+                        inputmode = "text"
+                        autocomplete = "on"
+                        placeholder = "Escaneie ou digite o endereço"
+                        required
+                        />
+
+                        <!-- Dica de formato para endereços
+                        <p class = "helper">
+                            <small class = "muted">Depósito/Pulmão: S?-R??-CC-NN • Picking: S?-R??-PP-NN-CC</small>
+                        </p> -->
+                </div>
+
+                <!-- Campo de Quantidade -->
+                <div class = "form_group">
+                    <label class = "form_label" for = "qty">Quantidade</label>
+                    <input
+                        class = "form_input"
+                        id = "qty"
+                        name = "qty"
+                        type = "number"
+                        inputmode = "numeric"
+                        min = "0"
+                        autocomplete = "on"
+                        placeholder = "Digite a quantidade contada"
+                        required
+                        />
+                </div>
+                
+                <!-- Campo de observações -->
+                <div class = "form_group">
+                    <label class = "form_label" for = "note">Observações (opcional)</label>
+                    <textarea
+                        class = "form_input"
+                        id = "note"
+                        name = "note"
+                        rows = "3"
+                        placeholder = "Ex: SKU com quantidade diferente do WMS."
+                        ></textarea>
+                </div>
+
+                <!-- Botão de salvar ocorrência -->
+                <button class = "btn btn--primary" type = "submit">Salvar ocorrência</button>
+                </form>
+            </section>
+
+            <footer class = "footer">
+                <small>© WMS Modular • Módulo Auditoria</small>
+            </footer>
+        </main>
+    </body>
+</html>
