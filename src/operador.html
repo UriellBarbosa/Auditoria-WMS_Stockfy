@@ -10,23 +10,23 @@
     </head>
     <body>
         <div id = "netbanner" class = "banner banner--online" role = "status" aria-live = "polite">
-            <span class = "banner_dot"></span>
-            <span class = "banner_message">🟢 Sistema online</span>
+            <span class = "banner__dot"></span>
+            <span class = "banner__message">🟢 Sistema online</span>
         </div>
          <main class = "page">
             <section class = "card" aria-labelledby ="op-title">
-                <header class = "card_header">
-                    <h1 id = "op-title" class = "card_title">Registrar ocorrência</h1>
-                   <!-- <p class = "card_subtitle">Use o coletor para informar SKU e endereço que precisam de verificação</p> -->
+                <header class = "card__header">
+                    <h1 id = "op-title" class = "card__title">Registrar ocorrência</h1>
+                   <!-- <p class = "card__subtitle">Use o coletor para informar SKU e endereço que precisam de verificação</p> -->
                 </header>
                 
                 <!-- Formulário de registro de ocorrência -->
                 <form class = "form" action = "#" method = "post" autocomplete = "off" novalidate></form>
                 
                 <!-- Campo de Área -->
-                <div class = "form_group">
-                    <label class = "form_label" for = "area">Área</label>
-                    <select class = "form_input" id = "area" name = "area" required>
+                <div class = "form__group">
+                    <label class = "form__label" for = "area">Área</label>
+                    <select class = "form__input" id = "area" name = "area" required>
                         <option value = "" selected disabled>selecione...</option>
                         <option value = "deposit">Depósito</option>
                         <option value = "picking">Picking</option>
@@ -35,10 +35,10 @@
                 </div>
                 
                 <!-- Campo de SKU -->
-                <div class = "form_group">
-                    <label class = "form_label" for = "sku">SKU</label>
+                <div class = "form__group">
+                    <label class = "form__label" for = "sku">SKU</label>
                     <input
-                        class = "form_input"
+                        class = "form__input"
                         id = "sku"
                         name = "sku"
                         type = "text"
@@ -50,10 +50,10 @@
                 </div>
                 
                 <!-- Campo de Endereço -->
-                <div class = "form_group">
-                    <label class = "form_label" for = "address">Endereço</label>
+                <div class = "form__group">
+                    <label class = "form__label" for = "address">Endereço</label>
                     <input
-                        class = "form_input"
+                        class = "form__input"
                         id = "address"
                         name = "address"
                         type = "text"
@@ -70,10 +70,10 @@
                 </div>
 
                 <!-- Campo de Quantidade -->
-                <div class = "form_group">
-                    <label class = "form_label" for = "qty">Quantidade</label>
+                <div class = "form__group">
+                    <label class = "form__label" for = "qty">Quantidade</label>
                     <input
-                        class = "form_input"
+                        class = "form__input"
                         id = "qty"
                         name = "qty"
                         type = "number"
@@ -86,10 +86,10 @@
                 </div>
                 
                 <!-- Campo de observações -->
-                <div class = "form_group">
-                    <label class = "form_label" for = "note">Observações (opcional)</label>
+                <div class = "form__group">
+                    <label class = "form__label" for = "note">Observações (opcional)</label>
                     <textarea
-                        class = "form_input"
+                        class = "form__input"
                         id = "note"
                         name = "note"
                         rows = "3"
