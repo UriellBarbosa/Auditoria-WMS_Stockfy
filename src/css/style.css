@@ -254,3 +254,26 @@ font-size: 12px;
 .card__title {
     font-size: 28px;
 }
+
+/* Operdador: em telas maiores, o card vira um painel (não fica "flutuando") */
+@media (min-width: 760px) {
+    .card--panel {
+        max-width: 100%;
+        margin: 0;
+        border-radius: 16px;
+    }
+}
+
+/* Operador: painel ocupa altura da tela em telas maiores */
+@media (min-width: 760px) {
+    .card--panel {
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+.card--panel .form {
+    flex: 1;
+    }
+}
