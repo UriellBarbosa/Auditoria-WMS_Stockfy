@@ -230,3 +230,27 @@ font-size: 12px;
         max-width: 900px;
     }
 }
+
+/* ===== MODO OPERAÇÃO - TELA DO OPERADOR ===== */
+
+/* Destacar para o campos de quantidade */
+#qty {
+    font-size: 18px;
+    font-weight: 300;
+}
+
+/* Espaçamento entre os campos do formulário */
+.page .card .form__group {
+    margin-bottom: 20px;
+}
+
+/* Botão mais destacado para ação de salvar */
+.card .btn {
+    font-size: 16px;
+    padding: 14px;
+}
+
+/* Melhor leitura do título */
+.card__title {
+    font-size: 28px;
+}
