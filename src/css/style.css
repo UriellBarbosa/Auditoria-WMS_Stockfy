@@ -58,7 +58,7 @@ body {
     background: var(--card-bg);
     padding: 32px;
     border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    /* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); */
 }
 
 /* Cabeçalho */
@@ -142,7 +142,7 @@ body {
 
 /* Rodapé (sempre em baixo da página) */
 .footer {
-    margin-top: 24px;
+    margin-top: auto;
     text-align: center;
     font-size: 12px;
     color: var(--muted);
@@ -276,4 +276,10 @@ font-size: 12px;
 .card--panel .form {
     flex: 1;
     }
+}
+
+/* Layout específico do operador */
+.page--operator {
+    justify-content: flex-start; /* remove centralização vertical */
+    padding: 0;
 }
