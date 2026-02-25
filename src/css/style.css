@@ -1,4 +1,4 @@
-/* Reset básico */
+/* Reset */
 * {
     margin: 0;
     padding: 0;
@@ -24,7 +24,7 @@
     --accent: #1e293b; /* destaque neutro */
 }
 
-/* Página de Login */
+/* ================================== Página de Login ================================ */
 
 /* Corpo da página */
 body {
@@ -148,7 +148,7 @@ body {
     color: var(--muted);
 }
 
-/**** PÁGINA DO OPERADOR ****/
+/* =============================== PÁGINA DO OPERADOR ============================== */
 
 /* Banner de status de conexão */
 .banner {
@@ -231,7 +231,7 @@ font-size: 12px;
     }
 }
 
-/* ===== MODO OPERAÇÃO - TELA DO OPERADOR ===== */
+/* ========================== MODO OPERAÇÃO - TELA DO OPERADOR ======================== */
 
 /* Destacar para o campos de quantidade */
 #qty {
@@ -282,4 +282,37 @@ font-size: 12px;
 .page--operator {
     justify-content: flex-start; /* remove centralização vertical */
     padding: 0;
+}
+
+/* =========================== BANNER DE ENVIO (OPERADOR) ========================== */
+
+.send-banner {
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+/* escondido por padrão */
+.send-banner--hiden {
+    display: none;
+}
+
+/* estilos */
+.send-banner--sent {
+    background: #dcfce7; /* verde claro */
+    color: #166534;
+}
+
+.send-banner--offline {
+    background: #fff7ed; /* laranja claro */
+    color: #9a3412;
+}
+
+.send-banner--error {
+    background: #fee2e2; /* vermelho claro */
+    color: #991b1b;
 }
