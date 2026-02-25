@@ -287,13 +287,22 @@ font-size: 12px;
 /* =========================== BANNER DE ENVIO (OPERADOR) ========================== */
 
 .send-banner {
-    padding: 12px 14px;
-    border-radius: 10px;
-    font-weight: 600;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+
+    width: min(420px, calc(100vw - 32px));
+    padding: 14px 16px;
+    border-radius: 12px;
+
+    font-weight: 700;
     display: flex;
-    justify-content: center;
+    justify-content: center ;
     align-items: center;
-    margin-bottom: 12px;
+
+    /*box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);*/
 }
 
 /* escondido por padrão */
