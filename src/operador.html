@@ -13,6 +13,24 @@
      <script src = "js/operator.js"></script>
      <script src = "js/network-status.js"></script>
 
+     <!-- Adiciona modal para confirmação da quantidade no operador -->
+     <div id = "qtyModal" class = "modal modal--hidden" role = "dialog" aria-modal = "true" aria-labelledby = "qtyModalTitle">
+        <div class = "modal__backdrop" data-close = "true"></div>
+
+        <div class = "modal__content">
+            <h2 id = "qtyModalTitle" class = "modal__title">Confirmar quantidade</h2>
+            <p class = "modal__text">
+                Confirme quantidade contada:
+                <strong id = "qtyModalValue">0</strong>
+            </p>
+
+            <div class = "modal__actions">
+                <button id = "qtyModalCancel" class = "btn btn--ghost" type = "button">Cancelar</button>
+                <button id = "qtyModalConfirm" class = "btn btn--primary" type = "button">Confirmar</button>
+            </div>
+        </div>
+     </div>
+
     <body>
         
         <!-- Banner de status de conexão -->
