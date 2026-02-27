@@ -8,92 +8,154 @@ document.addEventListener("DOMContentLoaded", () => {
     const banner = document.getElementById("sendBanner");
     const bannerText = document.getElementById("sendBannerText");
 
+    // Banner de envio (pop-up)
+    const sendBanner = document.getElementById("sendBanner");
+    const sendBannerText = document.getElementById("sendBannerText");
 
-    // Foco inicial no campo SKU
-    sku?.focus();
+    // Modal - confirmação de quantidade
+    const qtyModal = document.getElementById("qtyModal");
+    const qtyModalValue = document.getElementById("qtyModalValue");
+    const qtyModalCancel = document.getElementById("qtyModalCancel");
+    const qtyModalConfirm = document.getElementById("qtyModalConfirm");
 
-    function hideBanner() {
-        banner.classList.add("send-banner--hidden");
-        banner.classList.remove("send-banner--sent", "send-banner--offline", "send-banner--error");
-        bannerText.textContent = "";
+    if (!form || !sku || !address || !qty) {
+        console.warn("[operator.js] Campos obrigatórios não encontrados. Verifique IDs.");
+        return;
     }
 
-    function showBanner(type, message) {
-        banner.classList.remove("send-banner--hidden");
-        banner.classList.remove("send-banner--sent", "send-banner--offline", "send-banner--error");
-
-        banner.classList.add(type);
-        bannerText.textContent = message;
-
-        // Some sozinho depois de 3s
-        window.clearTimeout(showBanner._t);
-        showBanner._t = window.setTimeout(hideBanner, 3000);
+    // ============= Banner helpers ================
+    function hideSendBanner() {
+        if (!sendBanner || !sendBannerText) return;
+        sendBanner.classList.add("send-banner--hidden");
+        sendBanner.classList.remove("send-banner--sent", "send-banner--offline", "send-banner-error");
+        sendBannerText.textContent = "";
     }
 
+    function showSendBanner(typeClass, message) {
+        if (!sendBanner || !sendBannerText) return;
+        sendBanner.classList.remove("send-banner--hidden");
+        sendBanner.classList.remove("send-banner--sent", "send-banner--offline", "send-banner--error");
+        sendBanner.classList.add(typeClass);
+        sendBannerText.textContent = message;
+
+        window.clearTimeout(showSendBanner._t);
+        showSendBanner._t = window.setTimeout(hideSendBanner, 2500);
+    }
+
+    // ================= Modal helpers ================
+    function openQtyModal(value) {
+        if (!qtyModal || !qtyModalValue) return false;
+        qtyModalValue.textContent = String(value);
+        qtyModal.classList.remove("modal--hidden");
+        qtyModalConfirm?.focus();
+        return true;
+    }
+
+    function closeQtyModal() {
+        qtyModal?.classList.add("modal--hidden");
+    }
+
+    // Fecha ao clicar no backdrop
+    qtyModal?.addEventListener("click", (e) => {
+        const t = e.target;
+        if (t && t.dataset && t.dataset.close === "true") {
+            closeQtyModal();
+            qty.focus();
+        }
+    });
+
+    qtyModalCancel?.addEventListener("click", () => {
+        closeQtyModal();
+        qty.focus();
+    });
+
+    // ============== Fluxo Enter =============
     function isEnter(e) {
         return e.key === "Enter";
     }
 
-    // Enter no SKU / endereço vai para o próximo campo
-    [sku, address].forEach((el, idx) => {
-        if (!el) return;
-        el.addEventListener("keydown", (e) => {
-            if (!isEnter(e)) return;
-            e.preventDefault();
-            if (idx === 0) address?.focus();
-            if (idx === 1) qty?.focus();
-        });
-    });
+    sku.focus();
 
-    // Enter no campo de quantidade submete o formulário
-    qty?.addEventListener("keydown", (e) => {
+    sku.addEventListener("keydown", (e) => {
         if (!isEnter(e)) return;
         e.preventDefault();
-        form?.requestsubmit?.();
+        address.focus();
     });
 
-    function validate() {
+    address.addEventListener("keydown", (e) => {
+        if (!isEnter(e)) return;
+        e.preventDefault();
+        qty.focus();
+    });
+
+    qty.addEventListener("keydown", (e) => {
+        if (!isEnter(e)) return;
+        e.preventDefault();
+        form.requestSubmit();
+    });
+
+    // ===================== Validação ======================
+    function validateFields() {
         const errors = [];
 
-        if (!sku.value.trim()) errors.push("SKU não preenchido");
-        if (!address.value.trim()) errors.push("Endereço não preenchido");
+        if (!sku.value.trim()) errors.push({field: sku, msg: "SKU não preenchido"});
+        if (!address.value.trim()) errors.push({field: address, msg: "Endereço não preenchido"});
 
-        // Quantidade obrigatório e inteiro >= 0
         const qtyRaw = qty.value.trim();
         if (!qtyRaw) {
-            errors.push("Quantidade não preenchida");
+            errors.push({field: qty, msg: "Quantidade não preenchida"});
         } else {
             const n = Number(qtyRaw);
-            if (!Number.isInteger(n)) errors.push("Quantidade deve ser um número inteiro");
-            if (n < 0) errors.push("Quantidade não pode ser negativa");
+            if (!Number.isFfinite(n)) errors.push({field: qty, msg: "Quantidade inválida"});
+            else {
+                if (!Number.isInteger(n)) errors.push({field: qty, msg: "Quantidade deve ser um número inteiro"});
+                if (n < 0) errors.push({field: qty, msg: "Quantidade não pode ser negativa"});
+            }
         }
 
         return errors;
     }
 
-    form?.addEventListener("submit", (e) => {
+    // ====================== "Salvar" (simulado) ====================
+    function finalizeSave() {
+        if (navigator.onLine) {
+            showSendBanner("send-banner--sent", "Ocorrência enviada");
+        } else {
+            showSendBanner("send-banner--offline", "Ocorrência salva localmente");
+        }
+        form.reset();
+        sku.focus();
+    }
+
+    // Callback para executar após confirmar
+    let pendingSave = null;
+
+    qtyModalConfirm?.addEventListener("click", () => {
+        if (typeof pendingSave === "function") pendingSave();
+        pendingSave = null;
+        closeQtyModal();
+    });
+
+    // ===================== Submit ====================
+    form.addEventListener("submit", (e) => {
         e.preventDefault();
 
-        const errors = validate();
+        const errors = validateFields();
         if (errors.length > 0) {
-            showBanner("send-banner--error", `Falha ao enviar: ${errors[0]}`);
-
-            // Foca no primeiro campo com problema
-            if (errors[0].includes("SKU")) sku.focus();
-            else if (errors[0].includes("Endereço")) address.focus();
-            else qty.focus();
+            showSendBanner("send-banner--error", `Falha ao enviar: ${errors[0].msg}`);
+            errors[0].field.focus();
             return;
         }
 
-        // Sucesso: online vs offline (por enquanto sem backend)
-        if (navigator.onLine) {
-            showBanner("send-banner--sent", "Ocorrência enviada");
-        } else {
-            showBanner("send-banner--offline", "Ocorrência salva localmente");
-        }
+        // Abre modal para confirmar qualquer quantidade
+        const qtyValue = qty.value.trim();
 
-        // Aqui no futuro vai chamar a API. Por enquanto, só limpa os campos e foca no SKU.
-        form.reset();
-        sku.focus();
+        pendingSave = () => finalizeSave();
+
+        const opened = openQtyModal(qtyValue);
+        if (!opened){
+            // Se por algum motivo não existir modal, salva direto
+            finalizeSave();
+        }
     });
 });

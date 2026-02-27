@@ -325,3 +325,73 @@ font-size: 12px;
     background: #fee2e2; /* vermelho claro */
     color: #991b1b;
 }
+
+/* ============================= MODAL DE CONFIRMAÇÃO ============================= */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    /* Alterado para "flex" para garantir centralização perfeita em qualquer tela */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px; /* Evita que o modal cole nas bordas */
+}
+
+.modal--hiden {
+    display: none !important; /* mantém o display "none" para esconder, mas a estrutura acima assume quanto ativo */
+}
+
+.modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(2px); /* Adiciona charme: Desfoca o fundo levemente */
+}
+
+.modal__content {
+    position: relative; /* Para fica acima do backdrop */
+    width: 100%;
+    max-width: 400px;
+    background: var(--card-bg);
+    color: var(--text);
+    border-radius: 14px;
+    padding: 24px; /* aumento para dar mais "ar" ao conteúdo */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.modal__title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.modal__text {
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+#qtyModalValue {
+    color: var(--primary);
+    font-size: 1.2em;
+}
+
+.modal__actions {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+
+.modal__actions .btn {
+    flex: 1;
+    padding: 12px;
+}
+
+.btn--ghost {
+    background: #f1f5f9;
+    border: 1px solid var(--border);
+    color: var(--text);
+}
