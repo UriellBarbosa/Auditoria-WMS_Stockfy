@@ -1,3 +1,4 @@
+console.log("[operator.js] Script carregado");
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("form");
   const sku = document.getElementById("sku");
@@ -112,7 +113,18 @@ document.addEventListener("DOMContentLoaded", () => {
     if (modalOpen) return;
     if (e.key !== "Enter") return;
     e.preventDefault();
-    form.requestSubmit();
+    
+    // Valida antes de abrir modal
+    const errors = validateFields();
+    if (errors.length > 0) {
+        showSendBanner("send-banner--error", `Falha ao enviar: ${errors[0].msg}`);
+        errors[0].field.focus();
+        return;
+    }
+
+    // Abre modal de confirmação apertando Enter no campo de quantidade
+    pendingSave = finalizeSave; // só salva quando confirmar
+    openQtyModal(qty.value.trim());
   });
 
   // ===== Validação =====
