@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // ============= Banner helpers ================
+    // ===================== Banner helpers ===========================
     function hideSendBanner() {
         if (!sendBanner || !sendBannerText) return;
         sendBanner.classList.add("send-banner--hidden");
@@ -42,18 +42,40 @@ document.addEventListener("DOMContentLoaded", () => {
         showSendBanner._t = window.setTimeout(hideSendBanner, 2500);
     }
 
-    // ================= Modal helpers ================
+    // =========================== Modal helpers =========================
     function openQtyModal(value) {
         if (!qtyModal || !qtyModalValue) return false;
         qtyModalValue.textContent = String(value);
         qtyModal.classList.remove("modal--hidden");
-        qtyModalConfirm?.focus();
+        // Deley para garantir o foco no botão confirmar
+        setTimeout(() => qtyModalConfirm?.focus(), 50);
+
+        // Adiciona um escutador temporário para o Enter no modal
+        const handleModalEnter = (e) => {
+            if (e.key === "Enter"){
+                e.preventDefault();
+                qtyModalConfirm.click(); // Simula click ao confirmar
+                window.removeEventListener("keydown", handleModalEnter);
+            }
+        };
+        window.addEventListener("keydown", handleModalEnter);
         return true;
     }
 
-    function closeQtyModal() {
-        qtyModal?.classList.add("modal--hidden");
+    function hideModal(){
+        if (qtyModal){
+            qtyModal.classList.add("modal--hiden");
+            qtyModal.style.display = 'none';
+            setTimeout(() => sku.focus(), 150);
+        }
     }
+
+    window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !qtyModal.classList.contains("modal--hidden")){
+            closeQtyModal();
+            qty.focus();
+        }
+    });
 
     // Fecha ao clicar no backdrop
     qtyModal?.addEventListener("click", (e) => {
@@ -69,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
         qty.focus();
     });
 
-    // ============== Fluxo Enter =============
+    // ======================== Fluxo Enter ===========================
     function isEnter(e) {
         return e.key === "Enter";
     }
@@ -94,27 +116,24 @@ document.addEventListener("DOMContentLoaded", () => {
         form.requestSubmit();
     });
 
-    // ===================== Validação ======================
+    // ======================== Validação =============================
     function validateFields() {
         const errors = [];
 
         if (!sku.value.trim()) errors.push({field: sku, msg: "SKU não preenchido"});
         if (!address.value.trim()) errors.push({field: address, msg: "Endereço não preenchido"});
 
-        const qtyRaw = qty.value.trim();
-        if (!qtyRaw) {
-            errors.push({field: qty, msg: "Quantidade não preenchida"});
+        const qtyRaw = qty.value.trim().replace(',', '.'); // Aceita vírgula e converte para ponto
+        const n = Number(qtyRaw);
+
+        if (qtyRaw === "" || isNaN(n)) {
+            errors.push({field: qty, msg: "Quantidade inválida"});
         } else {
-            const n = Number(qtyRaw);
-            if (!Number.isFfinite(n)) errors.push({field: qty, msg: "Quantidade inválida"});
-            else {
                 if (!Number.isInteger(n)) errors.push({field: qty, msg: "Quantidade deve ser um número inteiro"});
                 if (n < 0) errors.push({field: qty, msg: "Quantidade não pode ser negativa"});
             }
+            return errors;
         }
-
-        return errors;
-    }
 
     // ====================== "Salvar" (simulado) ====================
     function finalizeSave() {
@@ -124,19 +143,21 @@ document.addEventListener("DOMContentLoaded", () => {
             showSendBanner("send-banner--offline", "Ocorrência salva localmente");
         }
         form.reset();
-        sku.focus();
+        setTimeout(() => sku.focus(), 100);
     }
 
     // Callback para executar após confirmar
     let pendingSave = null;
 
-    qtyModalConfirm?.addEventListener("click", () => {
-        if (typeof pendingSave === "function") pendingSave();
+    qtyModalConfirm?.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (typeof pendingSave === "function") {
+            pendingSave();}
         pendingSave = null;
-        closeQtyModal();
+        hideModal();
     });
 
-    // ===================== Submit ====================
+    // =========================== Submit =================================
     form.addEventListener("submit", (e) => {
         e.preventDefault();
 
@@ -149,8 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Abre modal para confirmar qualquer quantidade
         const qtyValue = qty.value.trim();
-
-        pendingSave = () => finalizeSave();
+        pendingSave = () => {finalizeSave()};
 
         const opened = openQtyModal(qtyValue);
         if (!opened){
