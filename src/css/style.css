@@ -354,8 +354,7 @@ font-size: 12px;
 .modal__content {
     position: relative; /* Para fica acima do backdrop */
     z-index: 2;
-    width: 100%;
-    max-width: 400px;
+    width: min(420px, calc(100vw - 32px));
     background: var(--card-bg);
     color: var(--text);
     border-radius: 14px;
@@ -383,7 +382,6 @@ font-size: 12px;
 
 .modal__actions {
     display: flex;
-    flex-direction: row;
     gap: 12px;
 }
 
