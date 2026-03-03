@@ -4,22 +4,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const address = document.getElementById("address");
   const qty = document.getElementById("qty");
 
-  // Banner de envio (pop-up)
+  // Banner envio (pop-up)
   const sendBanner = document.getElementById("sendBanner");
   const sendBannerText = document.getElementById("sendBannerText");
 
-  // Modal confirmação de quantidade
+  // Modal
   const qtyModal = document.getElementById("qtyModal");
   const qtyModalValue = document.getElementById("qtyModalValue");
   const qtyModalCancel = document.getElementById("qtyModalCancel");
   const qtyModalConfirm = document.getElementById("qtyModalConfirm");
 
   if (!form || !sku || !address || !qty) {
-    console.warn("[operator.js] Form/inputs não encontrados. Verifique IDs (sku, address, qty).");
+    console.warn("[operator.js] Form/inputs não encontrados (sku/address/qty).");
     return;
   }
 
-  // ===== Banner helpers =====
+  if (!qtyModal || !qtyModalValue || !qtyModalCancel || !qtyModalConfirm) {
+    console.warn("[operator.js] Elementos do modal não encontrados. Verifique IDs do modal.");
+    return;
+  }
+
+  // ===== Banner =====
   function hideSendBanner() {
     if (!sendBanner || !sendBannerText) return;
     sendBanner.classList.add("send-banner--hidden");
@@ -38,76 +43,74 @@ document.addEventListener("DOMContentLoaded", () => {
     showSendBanner._t = window.setTimeout(hideSendBanner, 2500);
   }
 
-  // ===== Modal helpers =====
+  // ===== Modal =====
   let modalOpen = false;
+  let pendingSave = null;
 
   function openQtyModal(value) {
-    if (!qtyModal || !qtyModalValue || !qtyModalConfirm) return false;
     qtyModalValue.textContent = String(value);
     qtyModal.classList.remove("modal--hidden");
     modalOpen = true;
     qtyModalConfirm.focus();
-    return true;
   }
 
   function closeQtyModal(focusQty = true) {
-    if (!qtyModal) return;
     qtyModal.classList.add("modal--hidden");
     modalOpen = false;
     if (focusQty) qty.focus();
   }
 
-  // Fecha clicando no backdrop
-  qtyModal?.addEventListener("click", (e) => {
+  // Backdrop
+  qtyModal.addEventListener("click", (e) => {
     const t = e.target;
     if (t instanceof HTMLElement && t.dataset.close === "true") {
       closeQtyModal(true);
     }
   });
 
-  qtyModalCancel?.addEventListener("click", () => closeQtyModal(true));
+  qtyModalCancel.addEventListener("click", () => closeQtyModal(true));
 
-  // ESC fecha modal / Enter confirma
+  qtyModalConfirm.addEventListener("click", () => {
+    if (typeof pendingSave === "function") pendingSave();
+    pendingSave = null;
+    closeQtyModal(false);
+  });
+
+  // ESC fecha / Enter confirma
   document.addEventListener("keydown", (e) => {
     if (!modalOpen) return;
 
     if (e.key === "Escape") {
       e.preventDefault();
       closeQtyModal(true);
-      return;
     }
 
     if (e.key === "Enter") {
       e.preventDefault();
-      qtyModalConfirm?.click();
-      return;
+      qtyModalConfirm.click();
     }
   });
 
-  // ===== Fluxo Enter nos campos (só quando modal NÃO está aberto) =====
-  function isEnter(e) {
-    return e.key === "Enter";
-  }
-
+  // ===== Fluxo Enter =====
   sku.focus();
 
   sku.addEventListener("keydown", (e) => {
     if (modalOpen) return;
-    if (!isEnter(e)) return;
+    if (e.key !== "Enter") return;
     e.preventDefault();
     address.focus();
   });
 
   address.addEventListener("keydown", (e) => {
     if (modalOpen) return;
-    if (!isEnter(e)) return;
+    if (e.key !== "Enter") return;
     e.preventDefault();
     qty.focus();
   });
 
   qty.addEventListener("keydown", (e) => {
     if (modalOpen) return;
-    if (!isEnter(e)) return;
+    if (e.key !== "Enter") return;
     e.preventDefault();
     form.requestSubmit();
   });
@@ -134,25 +137,14 @@ document.addEventListener("DOMContentLoaded", () => {
     return errors;
   }
 
-  // ===== “Salvar” (simulado) =====
+  // ===== Salvar (simulado) =====
   function finalizeSave() {
-    if (navigator.onLine) {
-      showSendBanner("send-banner--sent", "Ocorrência enviada");
-    } else {
-      showSendBanner("send-banner--offline", "Ocorrência salva localmente");
-    }
+    if (navigator.onLine) showSendBanner("send-banner--sent", "Ocorrência enviada");
+    else showSendBanner("send-banner--offline", "Ocorrência salva localmente");
+
     form.reset();
     sku.focus();
   }
-
-  // Confirmação executa o save pendente
-  let pendingSave = null;
-
-  qtyModalConfirm?.addEventListener("click", () => {
-    if (typeof pendingSave === "function") pendingSave();
-    pendingSave = null;
-    closeQtyModal(false); // não precisa focar qty, porque já limpou e vai pro SKU
-  });
 
   // ===== Submit =====
   form.addEventListener("submit", (e) => {
@@ -166,15 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Abre modal com a quantidade REAL digitada
-    const qtyValue = qty.value.trim();
-
-    pendingSave = finalizeSave;
-
-    const opened = openQtyModal(qtyValue);
-    if (!opened) {
-      // Se modal não existir, salva direto
-      finalizeSave();
-    }
+    pendingSave = finalizeSave; // só salva quando confirmar
+    openQtyModal(qty.value.trim());
   });
 });
