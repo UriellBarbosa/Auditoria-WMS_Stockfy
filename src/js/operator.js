@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let pendingSave = null;
 
   function openQtyModal(value) {
+    document.body.classList.add("no-scroll");
     qtyModalValue.textContent = String(value);
     qtyModal.classList.remove("modal--hidden");
     modalOpen = true;
@@ -56,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function closeQtyModal(focusQty = true) {
+    document.body.classList.remove("no-scroll");
     qtyModal.classList.add("modal--hidden");
     modalOpen = false;
     if (focusQty) qty.focus();
@@ -91,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const focusInsideModal = qtyModal && active && qtyModal.contains(active);
 
         if (!focusInsideModal) return; // só confirma se o foco já estiver dentro do modal
-        
+
         e.preventDefault();
       qtyModalConfirm.click();
     }
