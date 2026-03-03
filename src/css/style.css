@@ -383,3 +383,8 @@ font-size: 12px;
 .btn--ghost:hover {
   background: var(--border);
 }
+
+/* Impede rolagem do conteúdo quando modal aberto */
+.no-scroll {
+  overflow: hidden;
+}
