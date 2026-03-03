@@ -87,7 +87,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (e.key === "Enter") {
-      e.preventDefault();
+      const active = document.activeElement;
+      const focusInsideModal = qtyModal && active && qtyModal.contains(active);
+
+        if (!focusInsideModal) return; // só confirma se o foco já estiver dentro do modal
+        
+        e.preventDefault();
       qtyModalConfirm.click();
     }
   });
@@ -112,7 +117,9 @@ document.addEventListener("DOMContentLoaded", () => {
   qty.addEventListener("keydown", (e) => {
     if (modalOpen) return;
     if (e.key !== "Enter") return;
+
     e.preventDefault();
+    e.stopPropagation(); // evita que o form capture o Enter e envie sem validar
     
     // Valida antes de abrir modal
     const errors = validateFields();
@@ -124,7 +131,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Abre modal de confirmação apertando Enter no campo de quantidade
     pendingSave = finalizeSave; // só salva quando confirmar
-    openQtyModal(qty.value.trim());
+
+    setTimeout(() => openQtyModal(qty.value.trim()), 100);
   });
 
   // ===== Validação =====
