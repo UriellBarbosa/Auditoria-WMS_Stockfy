@@ -388,3 +388,18 @@ font-size: 12px;
 .no-scroll {
   overflow: hidden;
 }
+
+/* Animação leve para o modal */
+.modal__content {
+    animation: modalIn 120ms ease-out;
+}
+
+@keyframes modalIn {
+    from {
+        transform: translateY(-46%) scale(0.98);
+        opacity: 0;
+    } to {
+        transform: translateY(-50%) scale(1);
+        opacity: 1;
+    }
+}
