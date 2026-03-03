@@ -389,17 +389,16 @@ font-size: 12px;
   overflow: hidden;
 }
 
-/* Animação leve para o modal */
+/* Animação fade-in leve para o modal */
 .modal__content {
-    animation: modalIn 120ms ease-out;
+    opacity: 0;
+    animation: modalFadeIn 120ms ease-out forwards;
 }
 
-@keyframes modalIn {
+@keyframes modalFadeIn {
     from {
-        transform: translateY(-46%) scale(0.98);
         opacity: 0;
     } to {
-        transform: translateY(-50%) scale(1);
         opacity: 1;
     }
 }
