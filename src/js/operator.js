@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ===== Salvar (simulado) =====
-  function finalizeSave() {
+  async function finalizeSave() {
     const profile = window.currentProfile;
 
     if (!profile) {
