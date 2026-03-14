@@ -10,7 +10,7 @@
     </head>
     <body>
 
-        <!-- Adiciona modal para confirmação da quantidade no operador -->
+        <!-- Adiciona modal para confirmação da quantidade -->
      <div id = "qtyModal" class = "modal modal--hidden" role = "dialog" aria-modal = "true" aria-labelledby = "qtyModalTitle">
         <div class = "modal__backdrop" data-close = "true"></div>
 
@@ -35,8 +35,29 @@
             <span class = "banner__message">Sistema online</span>
         </div>
 
+            <!-- Layout principal com sidebar -->
+        <div class = "app-layout">
+
+            <!-- Barra lateral de navegação -->
+            <aside class = "sidebar">
+                <div class = "sidebar__brand">
+                    <h1 class = "sidebar__title">WMS Modular</h1>
+                    <p class = "sidebar__subtitle">Módulo Auditoria</p>
+                </div>
+
+                <nav class = "sidebar__nav" aria-label = "Menu principal">
+                    <a href = "operador.html" class = "sidebar__link sidebar__link--active">Operador</a>
+                    <a href = "#" class = "sidebar__link">Auditoria</a>
+                    <a href = "#" class = "sidebar__link">configurações</a>
+                </nav>
+
+                <div class = "sidebar__footer">
+                    <button id="logoutButton" class = "btn btn--ghost btn--sidebar" type = "button">Sair</button>
+                </div>
+            </aside>
+
         <!-- Conteúdo principal da página -->
-         <main class = "page page--operator">
+         <main class = "page page--operator page--content">
             
             <!-- banner de envio (operador) escondido por padrão -->
              <div id = "sendBanner" class = "send-banner send-banner--hidden" role = "status" aria-live = "polite">
@@ -46,7 +67,7 @@
             <section class = "card card--wide card--panel" aria-labelledby ="op-title">
                 <header class = "card__header">
                     <h1 id = "op-title" class = "card__title">Registrar ocorrência</h1>
-                   <!-- <p class = "card__subtitle">Use o coletor para informar SKU e endereço que precisam de verificação</p> -->
+
                 </header>
                 
                 <!-- Formulário de registro de ocorrência -->
@@ -91,11 +112,6 @@
                         placeholder = "Escaneie ou digite o endereço"
                         required
                         />
-
-                        <!-- Dica de formato para endereços
-                        <p class = "helper">
-                            <small class = "muted">Depósito/Pulmão: S?-R??-CC-NN • Picking: S?-R??-PP-NN-CC</small>
-                        </p> -->
                 </div>
 
                 <!-- Campo de Quantidade -->
@@ -142,6 +158,5 @@
         <script src = "js/network-status.js"></script>
         <script src = "js/session.js"></script>
         <script src = "js/operator.js"></script>
-
     </body>
 </html>
