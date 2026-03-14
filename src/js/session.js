@@ -35,4 +35,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     console.log("Perfil do usuário:", profile);
+    window.currentProfile = profile;
 });
