@@ -37,12 +37,12 @@
                         <label class = "form__label" for = "username">Usuário</label>
                         <input
                             class = "form__input"
-                            id = "username"
-                            name = "username"
-                            type = "text"
-                            inputmode = "text"
-                            autocomplete = "username"
-                            placeholder = "Digite seu usuário"
+                            id = "email"
+                            name = "email"
+                            type = "email"
+                            inputmode = "email"
+                            autocomplete = "email"
+                            placeholder = "Digite seu e-mail"
                             required
                             />
                     </div>
@@ -76,8 +76,9 @@
             </footer>
         </main>
 
-        <!-- Importação de bibliotecas Supabase -->
+        <!-- Importação de login e bibliotecas Supabase -->
         <script src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
         <script src = "js/supabase.js"></script>
+        <script src = "js/auth.js"></script>
     </body>
 </html>
