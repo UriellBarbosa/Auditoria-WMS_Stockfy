@@ -5,7 +5,7 @@ window.supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 console.log("Supabase conectado");
 
-async function testConnection() {
+/*async function testConnection() {
     const {data, error} = await supabaseClient
     .from("modules")
     .select("*")
@@ -13,4 +13,4 @@ async function testConnection() {
     console.log("modules:", data)
 }
 
-testConnection();
+testConnection();*/

@@ -27,6 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
             console.log("Usuário logado:", data);
-            window.location.href = "./operator.html";
+            window.location.href = "operador.html";
         });
     });
