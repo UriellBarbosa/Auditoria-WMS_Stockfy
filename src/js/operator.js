@@ -161,8 +161,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ===== Salvar (simulado) =====
   function finalizeSave() {
-    if (navigator.onLine) showSendBanner("send-banner--sent", "Ocorrência enviada");
-    else showSendBanner("send-banner--offline", "Ocorrência salva localmente");
+    const profile = window.currentProfile;
+
+    if (!profile) {
+      showSendBanner("send-banner--error", "Erro: perfil do usuário não encontrado. Recarregue a página.");
+      return;
+    }
+
+    const payload = {
+      company_id: profile.company_id,
+      created_by: profile.id,
+      area_label: document.getElementById("area")?.value || null,
+      sku: sku.value.trim(),
+      address: address.value.trim(),
+      quantity: Number(qty.value.trim()),
+      note: document.getElementById("note")?.value.trim() || null,
+      status: "pending",
+    };
+
+    const {error} = await
+    window.supabaseClient
+  .from("occurrences")
+  .insert([payload]);
+
+  if (error) {
+    console.error("Erro ao salvar ocorrência:", error.message);
+    showSendBanner("send-banner--error", `Falha ao enviar: ${error.message}`);
+    return;
+  }
+
+  if (navigator.onLine) {
+    showSendBanner("send-banner--sent", "Ocorrência enviada com sucesso!");
+  } else {
+    showSendBanner("send-banner--offline", "Ocorrência salva localmente.");
+  }
 
     form.reset();
     sku.focus();
