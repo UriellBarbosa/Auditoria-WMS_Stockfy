@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const logoutButton = document.getElementById("logout-button");
+    const logoutButton = document.getElementById("logoutButton");
 
     if (!logoutButton) return;
 
