@@ -1,13 +1,44 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const Toggle = document.getElementById("menuToggle");
-    const Sidebar = document.querySelector(".sidebar");
+    const toggle = document.getElementById("menuToggle");
+    const sidebar = document.querySelector(".sidebar");
+    const sidebarLinks = document.querySelectorAll(".sidebar__link");
 
-    if (!Toggle || !Sidebar) return
+    if (!toggle || !sidebar) return;
 
-    Toggle.addEventListener("click", () => {
-        Sidebar.classList.toggle("sidebar--open")
-    })
+    function openSidebar() {
+        sidebar.classList.add("sidebar--open");
+    }
+
+    function closeSidebar() {
+        sidebar.classList.remove("sidebar--open");
+    }
+
+    function toggleSidebar(event) {
+        event.stopPropagation();
+
+        sidebar.classList.toggle("sidebar--open");
+    }
+
+    toggle.addEventListener("click", toggleSidebar);
+
+    sidebar.addEventListener("click", (event) => {
+        event.stopPropagation();
+    });
+
+    document.addEventListener("click", () => {
+        closeSidebar();
+    });
+
+    sidebarLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+            closeSidebar();
+        });
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeSidebar();
+        }
+    });
 });
-
-        
 
