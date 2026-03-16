@@ -58,6 +58,9 @@ async function syncOfflineOccurrences() {
 
   showSendBanner("send-banner--offline", "Iniciando sincronização de ocorrências offline...");
 
+  // Atraso entre o início da sincronização e a mensagem de sucesso para melhorar UX
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
   // Remove o ID local (se existir) para evitar conflitos com o Supabase
   const sanitizedOccurrences = occurrences.map(({created_at_local, ...rest}) => rest);
   
@@ -72,9 +75,10 @@ async function syncOfflineOccurrences() {
   }
 
   localStorage.removeItem("offline_occurrences");
+
   console.log("Ocorrências offline sincronizadas");
 
-  showSendBanner("send-banner--sent", "Ocorrências offline sincronizadas.");
+  showSendBanner("send-banner--sent", `${occurrences.length} Ocorrência(s) offline sincronizada(s).`);
 }
 
   // ========================= Modal =======================
