@@ -9,9 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const sendBanner = document.getElementById("sendBanner");
   const sendBannerText = document.getElementById("sendBannerText");
 
-  // Sincroniza ocorrências offline pendentes ao carregar a página
-  syncOfflineOccurrences();
-  
   // Modal
   const qtyModal = document.getElementById("qtyModal");
   const qtyModalValue = document.getElementById("qtyModalValue");
@@ -46,6 +43,39 @@ document.addEventListener("DOMContentLoaded", () => {
     window.clearTimeout(showSendBanner._t);
     showSendBanner._t = window.setTimeout(hideSendBanner, 2500);
   }
+
+  // ============================ Sincronização Offline ==============================
+async function syncOfflineOccurrences() {
+  const stored = localStorage.getItem("offline_occurrences");
+
+  if (!stored) return;
+
+  const occurrences = JSON.parse(stored);
+
+  if (!occurrences.length) return;
+
+  console.log("Sincronizando ocorrências offline...", occurrences);
+
+  showSendBanner("send-banner--offline", "Iniciando sincronização de ocorrências offline...");
+
+  // Remove o ID local (se existir) para evitar conflitos com o Supabase
+  const sanitizedOccurrences = occurrences.map(({created_at_local, ...rest}) => rest);
+  
+  const {error} = await window.supabaseClient
+    .from("occurrences")
+    .insert(sanitizedOccurrences);
+
+  if (error) {
+    console.error("Erro ao sincronizar ocorrências offline:", error.message);
+    showSendBanner("send-banner--error", `Falha na sincronização: ${error.message}`);
+    return;
+  }
+
+  localStorage.removeItem("offline_occurrences");
+  console.log("Ocorrências offline sincronizadas");
+
+  showSendBanner("send-banner--sent", "Ocorrências offline sincronizadas.");
+}
 
   // ========================= Modal =======================
   let modalOpen = false;
@@ -220,9 +250,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // ============================= Submit ==============================
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+
     if (modalOpen) return;
 
     const errors = validateFields();
+
     if (errors.length > 0) {
       showSendBanner("send-banner--error", `Falha ao enviar: ${errors[0].msg}`);
       errors[0].field.focus();
@@ -232,36 +264,13 @@ document.addEventListener("DOMContentLoaded", () => {
     pendingSave = finalizeSave; // só salva quando confirmar
     openQtyModal(qty.value.trim());
   });
-});
 
-// ============================ Sincronização Offline ==============================
-async function syncOfflineOccurrences() {
-  const stored = localStorage.getItem("offline_occurrences");
+  // Sincroniza ocorrências offline pendentes ao carregar a página
+  syncOfflineOccurrences();
 
-  if (!stored) return;
-
-  const occurrences = JSON.parse(stored);
-
-  if (!occurrences.length) return;
-
-  console.log("Sincronizando ocorrências offline...", occurrences);
-
-  const {error} = await window.supabaseClient
-    .from("occurrences")
-    .insert(occurrences);
-
-  if (error) {
-    console.error("Erro ao sincronizar ocorrências offline:", error.message);
-    return;
-  }
-
-  localStorage.removeItem("offline_occurrences");
-  console.log("Ocorrências offline sincronizadas com sucesso.");
-
-  showSendBanner("send-banner--sent", "Ocorrências offline sincronizadas.");
-}
-
-window.addEventListener("online", () => {
+  // Sincroniza ocorrências offline quando a conexão for restaurada
+  window.addEventListener("online", () => {
   console.log("Conexão restaurada. Iniciando sincronização de ocorrências offline...");
   syncOfflineOccurrences();
+  });
 });
