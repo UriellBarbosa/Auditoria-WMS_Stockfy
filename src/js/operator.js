@@ -177,8 +177,26 @@ document.addEventListener("DOMContentLoaded", () => {
       quantity: Number(qty.value.trim()),
       note: document.getElementById("note")?.value.trim() || null,
       status: "pending",
+      created_at_local: new
+      Date().toISOString(),
     };
 
+    // Offline: salva no localmente e sincroniza depois
+    if (!navigator.onLine) {
+      const offlineOccurrences = JSON.parse(localStorage.getItem("offline_occurrences")
+      || "[]");
+      offlineOccurrences.push(payload);
+
+      localStorage.setItem("offline_occurrences",
+        JSON.stringify(offlineOccurrences));
+
+      showSendBanner("send-banner--offline", "Ocorrência salva localmente.");
+      form.reset();
+      sku.focus();
+      return;
+    }
+
+    // Online: salva no Supabase
     const {error} = await
     window.supabaseClient
   .from("occurrences")
@@ -190,11 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  if (navigator.onLine) {
-    showSendBanner("send-banner--sent", "Ocorrência enviada com sucesso!");
-  } else {
-    showSendBanner("send-banner--offline", "Ocorrência salva localmente.");
-  }
+    showSendBanner("send-banner--sent", "Ocorrência enviada");
 
     form.reset();
     sku.focus();
