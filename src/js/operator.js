@@ -9,6 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const sendBanner = document.getElementById("sendBanner");
   const sendBannerText = document.getElementById("sendBannerText");
 
+  // Sincroniza ocorrências offline pendentes ao carregar a página
+  syncOfflineOccurrences();
+  
   // Modal
   const qtyModal = document.getElementById("qtyModal");
   const qtyModalValue = document.getElementById("qtyModalValue");
@@ -25,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // ===== Banner =====
+  // ======================== Banner ======================
   function hideSendBanner() {
     if (!sendBanner || !sendBannerText) return;
     sendBanner.classList.add("send-banner--hidden");
@@ -44,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showSendBanner._t = window.setTimeout(hideSendBanner, 2500);
   }
 
-  // ===== Modal =====
+  // ========================= Modal =======================
   let modalOpen = false;
   let pendingSave = null;
 
@@ -99,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ===== Fluxo Enter =====
+  // ============================ Fluxo Enter =======================
   sku.focus();
 
   sku.addEventListener("keydown", (e) => {
@@ -137,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => openQtyModal(qty.value.trim()), 100);
   });
 
-  // ===== Validação =====
+  // ============================ Validação ===========================
   function validateFields() {
     const errors = [];
 
@@ -159,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return errors;
   }
 
-  // ===== Salvar (simulado) =====
+  // ============================= Salvar ===========================
   async function finalizeSave() {
     const profile = window.currentProfile;
 
@@ -214,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
     sku.focus();
   }
 
-  // ===== Submit =====
+  // ============================= Submit ==============================
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     if (modalOpen) return;
@@ -229,4 +232,36 @@ document.addEventListener("DOMContentLoaded", () => {
     pendingSave = finalizeSave; // só salva quando confirmar
     openQtyModal(qty.value.trim());
   });
+});
+
+// ============================ Sincronização Offline ==============================
+async function syncOfflineOccurrences() {
+  const stored = localStorage.getItem("offline_occurrences");
+
+  if (!stored) return;
+
+  const occurrences = JSON.parse(stored);
+
+  if (!occurrences.length) return;
+
+  console.log("Sincronizando ocorrências offline...", occurrences);
+
+  const {error} = await window.supabaseClient
+    .from("occurrences")
+    .insert(occurrences);
+
+  if (error) {
+    console.error("Erro ao sincronizar ocorrências offline:", error.message);
+    return;
+  }
+
+  localStorage.removeItem("offline_occurrences");
+  console.log("Ocorrências offline sincronizadas com sucesso.");
+
+  showSendBanner("send-banner--sent", "Ocorrências offline sincronizadas.");
+}
+
+window.addEventListener("online", () => {
+  console.log("Conexão restaurada. Iniciando sincronização de ocorrências offline...");
+  syncOfflineOccurrences();
 });
