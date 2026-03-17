@@ -88,7 +88,7 @@ async function loadAreas() {
 
   if (!profile || !areaSelect) return;
 
-  const { data: areas, error } = await window.supabaseClient
+  const { data, error } = await window.supabaseClient
     .from("areas")
     .select("id, name, slug")
     .eq("company_id", profile.company_id)
@@ -103,7 +103,7 @@ async function loadAreas() {
 
   areaSelect.innerHTML = `<option value=""selected disabled>Selecione uma área...</option>`;
 
-  areas.forEach((area) => {
+  data.forEach((area) => {
     const option = document.createElement("option");
     option.value = area.id;
     option.textContent = area.name;
@@ -243,7 +243,7 @@ async function loadAreas() {
 
     const areaSelect = document.getElementById("area");
     const selectedOption = areaSelect?.options[areaSelect.selectedIndex];
-    
+
     const payload = {
       company_id: profile.company_id,
       created_by: profile.id,
