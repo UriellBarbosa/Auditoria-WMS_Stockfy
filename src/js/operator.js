@@ -81,7 +81,43 @@ async function syncOfflineOccurrences() {
   showSendBanner("send-banner--sent", `${occurrences.length} Ocorrência(s) offline sincronizada(s).`);
 }
 
-  // ========================= Modal =======================
+// ============================ Carregar áreas no select ==============================
+async function loadAreas() {
+  const profile = window.currentProfile;
+  const areaSelect = document.getElementById("area");
+
+  if (!profile || !areaSelect) return;
+
+  const { data: areas, error } = await window.supabaseClient
+    .from("areas")
+    .select("id, name, slug")
+    .eq("company_id", profile.company_id)
+    .eq("is_active", true)
+    .order("name", { ascending: true });
+
+  if (error) {
+    console.error("Erro ao carregar áreas:", error.message);
+    showSendBanner("send-banner--error", "Erro ao carregar áreas");
+    return;
+  }
+
+  areaSelect.innerHTML = `<option value=""selected disabled>Selecione uma área...</option>`;
+
+  areas.forEach((area) => {
+    const option = document.createElement("option");
+    option.value = area.id;
+    option.textContent = area.name;
+    option.dataset.slug = area.slug;
+    areaSelect.appendChild(option);
+  });
+}
+
+  // Carrega áreas com um pequeno delay para garantir que o perfil do usuário já esteja disponível
+  setTimeout(() => {
+    loadAreas();
+  }, 400);
+
+  // =============================== Modal =================================
   let modalOpen = false;
   let pendingSave = null;
 
@@ -205,10 +241,14 @@ async function syncOfflineOccurrences() {
       return;
     }
 
+    const areaSelect = document.getElementById("area");
+    const selectedOption = areaSelect?.options[areaSelect.selectedIndex];
+    
     const payload = {
       company_id: profile.company_id,
       created_by: profile.id,
-      area_label: document.getElementById("area")?.value || null,
+      area_id: areaSelect?.value || null,
+      area_label: selectedOption ? selectedOption.textContent : null,
       sku: sku.value.trim(),
       address: address.value.trim(),
       quantity: Number(qty.value.trim()),
