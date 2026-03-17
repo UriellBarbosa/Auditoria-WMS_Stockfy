@@ -518,3 +518,83 @@ font-size: 12px;
         padding: 20px;
     }
 }
+
+/* ============== Tela de auditoria ================ */
+/* ===== Tela de auditoria ===== */
+
+.content {
+  flex: 1;
+  padding: 30px;
+  background: var(--background);
+}
+
+.content__header {
+  margin-bottom: 24px;
+}
+
+.table {
+  background: var(--card-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.table__header,
+.table__row {
+  display: grid;
+  grid-template-columns: 1.2fr 1.4fr 1fr 0.8fr 0.8fr 1.2fr;
+  gap: 12px;
+  padding: 14px 16px;
+  align-items: center;
+}
+
+.table__header {
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+}
+
+.table__row {
+  border-top: 1px solid var(--border);
+  background: white;
+  font-size: 14px;
+}
+
+.table__row:nth-child(even) {
+  background: #f8fafc;
+}
+
+.table__empty {
+  padding: 20px 16px;
+  color: var(--muted);
+}
+
+.sidebar__logout {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  cursor: pointer;
+}
+
+.sidebar__logout:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 20px;
+  }
+
+  .table {
+    overflow-x: auto;
+  }
+
+  .table__header,
+  .table__row {
+    min-width: 720px;
+  }
+}
