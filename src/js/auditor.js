@@ -3,6 +3,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const profile = window.currentProfile;
     const occurrencesList = document.getElementById("occurrencesList");
 
+    console.log("loadOccurrences iniciou");
+    console.log("currentProfile:", profile);
+    console.log("occurrencesList encontrado:", !!occurrencesList);
+
     if (!profile || !occurrencesList) return;
 
     const { data, error } = await window.supabaseClient
@@ -10,6 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
       .select("*")
       .eq("company_id", profile.company_id)
       .order("created_at", { ascending: false });
+
+    console.log("occurrences data:", data);
+    console.log("occurrences error:", error);
 
     if (error) {
       console.error("Erro ao carregar ocorrências:", error.message);

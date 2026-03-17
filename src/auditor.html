@@ -11,73 +11,89 @@
 
     <body>
 
-        <!-- Banner de status de conexão -->
-        <div id = "netBanner" class = "banner banner--online" role = "status" aria-live = "polite">
-            <span class = "banner__dot"></span>
-            <span class = "banner__message">Sistema online</span>
+  <!-- Banner de status de conexão -->
+  <div id="netBanner" class="banner banner--online" role="status" aria-live="polite">
+    <span class="banner__dot"></span>
+    <span class="banner__message">Sistema online</span>
+  </div>
+
+  <div class="app-layout">
+
+    <aside class="sidebar">
+
+      <div class="sidebar__brand">
+        <h1 class="sidebar__title">WMS Modular</h1>
+        <p class="sidebar__subtitle">Módulo Auditoria</p>
+
+      </div>
+
+      <nav class="sidebar__nav" aria-label="Menu principal">
+
+        <a href="./operator.html" class="sidebar__link">Operador</a>
+        <a href="./auditor.html" class="sidebar__link sidebar__link--active">Auditoria</a>
+        <a href="#" class="sidebar__link">Configurações</a>
+
+      </nav>
+
+      <div class="sidebar__footer">
+
+        <button id="logoutButton" class="btn btn--ghost btn--sidebar" type="button">Sair</button>
+
+      </div>
+
+    </aside>
+
+    <main class="page page--operator page--content">
+
+      <header class="app-header">
+
+        <button id="menuToggle" class="menu-toggle" aria-label="Abrir menu">☰</button>
+
+      </header>
+
+      <section class="card card--wide card--panel" aria-labelledby="auditor-title">
+
+        <header class="card__header">
+
+          <h1 id="auditor-title" class="card__title">Ocorrências</h1>
+
+          <p class="card__subtitle">Gerencie e visualize as ocorrências registradas no sistema.</p>
+
+        </header>
+
+        <div class="table">
+
+          <div class="table__header">
+
+            <span>SKU</span>
+            <span>Endereço</span>
+            <span>Área</span>
+            <span>Quantidade</span>
+            <span>Status</span>
+            <span>Data</span>
+
+          </div>
+
+          <div id="occurrencesList" class="table__body">
+            <!-- dados virão do banco -->
+          </div>
+
         </div>
 
-            <!-- Layout principal com sidebar -->
-             <main class="page page--operator">
+      </section>
 
-                <!-- sidebar -->
-                 <aside class="sidebar">
+    </main>
 
-                    <button class="sidebar__toggle" id="menuToggle">☰</button>
+  </div>
 
-                    <nav class="sidebar__nav">
-
-                        <h2 class="sidebar__title">WMS Modular</h2>
-
-                        <a href="operador.html" class="sidebar__link">Operador</a>
-
-                        <a href="auditor.html" class="sidebar__link sidebar__link--active">Auditoria</a>
-
-                        <button id="logoutButton" class="sidebar__logout">Sair</button>
-                    </nav>
-                 </aside>
-
-                    <!-- Conteúdo principal da página -->
-                     <section class="content">
-
-                        <header class="content__header">
-                            <h1>Ocorrências</h1>
-                            <p class="muted">Gerencie e visualize as ocorrências registradas no sistema.</p>
-                        </header>
-
-                        <!-- Tabela de ocorrências -->
-                         <div class="table">
-
-                            <div class="table__header">
-
-                                <span>SKU</span>
-                                <span>Endereço</span>
-                                <span>Área</span>
-                                <span>Quantidade</span>
-                                <span>Status</span>
-                                <span>Data</span>
-
-                            </div>
-
-                            <div id="ocurrencesList" class="table__body">
-
-                                <!-- Dados virão do banco de dados -->
-
-                            </div>
-
-                         </div>
-
-                     </section>
-
-             </main>
-             
-             <!-- JavaScript -->
-              <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-              <script src="js/supabase.js"></script>
-              <script src="js/session.js"></script>
-              <script src="js/network-status.js"></script>
-              <script src="js/logout.js"></script>
-              <script src="js/auditor.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/network-status.js"></script>
+  <script src="js/session.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/logout.js"></script>
+  <script src="js/auditor.js"></script>
 
     </body>
+
 </html>

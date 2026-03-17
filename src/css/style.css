@@ -520,7 +520,6 @@ font-size: 12px;
 }
 
 /* ============== Tela de auditoria ================ */
-/* ===== Tela de auditoria ===== */
 
 .content {
   flex: 1;
@@ -597,4 +596,9 @@ font-size: 12px;
   .table__row {
     min-width: 720px;
   }
+}
+
+.table__body {
+  display: flex;
+  flex-direction: column;
 }
