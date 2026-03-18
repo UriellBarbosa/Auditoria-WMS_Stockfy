@@ -523,9 +523,9 @@ font-size: 12px;
 
 .page--content {
   flex: 1;
-  min-height: 100vh;
   padding: 30px;
   background: var(--background);
+  min-width: 0;
 }
 
 .card--panel {
