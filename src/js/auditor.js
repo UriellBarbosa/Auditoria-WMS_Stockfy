@@ -59,17 +59,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const address = occurrence.address ?? "-";
       const area_label = occurrence.area?.label ?? "-";
       const quantity = occurrence.quantity ?? "-";
+      const note = occurrence.note?.trim() ? occurrence.note : "-";
       const status = occurrence.status ?? "pending";
       const isResolved = status === "resolved";
 
       console.log("Processando ocorrência:", occurrence);
-      
+
       return `
         <div class="table__row">
           <span>${sku}</span>
           <span>${address}</span>
           <span>${area_label}</span>
           <span>${quantity}</span>
+          <span>${note}</span>
           <span>
             <span class="status-badge status-badge--${status}">
             ${status}</span>
