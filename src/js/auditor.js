@@ -2,8 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
   async function resolveOccurrence(Id) {
     const { error } = await window.supabaseClient
       .from("occurrences")
-     .update({ status: "resolved" })
-     .eq("id", Id);
+      .update({ status: "resolved" })
+      .eq("id", Id);
 
     if (error) {
       console.error("Erro ao resolver ocorrência:", error.message);
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (!data || !data.length) {
+    if (!data || !data.length === 0) {
       occurrencesList.innerHTML = `
         <div class="table__empty">
           Nenhuma ocorrência encontrada
@@ -53,7 +53,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const rowsHtml = data.map((occurrence) => {
-      const createdAt = occurrence.created_at ? new Date(occurrence.created_at).toLocaleString("pt-BR") : "-";
+      const createdAt = occurrence.created_at ? new Date(occurrence.created_at)
+      .toLocaleString("pt-BR") : "-";
       const sku = occurrence.sku ?? "-";
       const address = occurrence.address ?? "-";
       const area_label = occurrence.area?.label ?? "-";
@@ -61,6 +62,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const status = occurrence.status ?? "pending";
       const isResolved = status === "resolved";
 
+      console.log("Processando ocorrência:", occurrence);
+      
       return `
         <div class="table__row">
           <span>${sku}</span>
