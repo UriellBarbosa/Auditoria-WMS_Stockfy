@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const { data, error } = await window.supabaseClient
       .from("occurrences")
-      .select("*")
+      .select(`*, areas (name)`)
       .eq("company_id", profile.company_id)
       .order("created_at", { ascending: false });
 
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .toLocaleString("pt-BR") : "-";
       const sku = occurrence.sku ?? "-";
       const address = occurrence.address ?? "-";
-      const area_label = occurrence.area?.label ?? "-";
+      const area_label = occurrence.areas?.name || occurrence.area_label || "-";
       const quantity = occurrence.quantity ?? "-";
       const note = occurrence.note?.trim() ? occurrence.note : "-";
       const status = occurrence.status ?? "pending";
