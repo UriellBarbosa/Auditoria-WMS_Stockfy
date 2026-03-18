@@ -112,11 +112,6 @@ async function loadAreas() {
   });
 }
 
-  // Carrega áreas com um pequeno delay para garantir que o perfil do usuário já esteja disponível
-  setTimeout(() => {
-    loadAreas();
-  }, 400);
-
   // =============================== Modal =================================
   let modalOpen = false;
   let pendingSave = null;
@@ -254,15 +249,17 @@ async function loadAreas() {
       quantity: Number(qty.value.trim()),
       note: document.getElementById("note")?.value.trim() || null,
       status: "pending",
-      created_at_local: new
-      Date().toISOString(),
     };
 
-    // Offline: salva no localmente e sincroniza depois
+    // Offline: salva localmente e sincroniza depois
     if (!navigator.onLine) {
+      const offlinePayload = {
+        ...payload,
+        created_at_local: new
+      Date().toISOString(),};
       const offlineOccurrences = JSON.parse(localStorage.getItem("offline_occurrences")
       || "[]");
-      offlineOccurrences.push(payload);
+      offlineOccurrences.push(offlinePayload);
 
       localStorage.setItem("offline_occurrences",
         JSON.stringify(offlineOccurrences));
@@ -316,5 +313,14 @@ async function loadAreas() {
   window.addEventListener("online", () => {
   console.log("Conexão restaurada. Iniciando sincronização de ocorrências offline...");
   syncOfflineOccurrences();
+  });
+
+  if (window.currentProfile) {
+    loadAreas();
+  }
+
+  // Recarrega áreas quando o perfil for carregado (evento customizado disparado em session.js)
+  document.addEventListener("profileLoaded", () => {
+    loadAreas();
   });
 });
