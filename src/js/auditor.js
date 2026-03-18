@@ -1,4 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
+  async function resolveOccurrence(Id) {
+    const { error } = await window.supabaseClient
+      .from("occurrences")
+     .update({ status: "resolved" })
+     .eq("id", Id);
+
+    if (error) {
+      console.error("Erro ao resolver ocorrência:", error.message);
+      alert("Erro ao resolver ocorrência. Tente novamente.");
+      return;
+    }
+
+    loadOccurrences();
+  }
+
   async function loadOccurrences() {
     const profile = window.currentProfile;
     const occurrencesList = document.getElementById("occurrencesList");
@@ -37,24 +52,45 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    occurrencesList.innerHTML = "";
+    const rowsHtml = data.map((occurrence) => {
+      const createdAt = occurrence.created_at ? new Date(occurrence.created_at).toLocaleString("pt-BR") : "-";
+      const sku = occurrence.sku ?? "-";
+      const address = occurrence.address ?? "-";
+      const area_label = occurrence.area?.label ?? "-";
+      const quantity = occurrence.quantity ?? "-";
+      const status = occurrence.status ?? "pending";
+      const isResolved = status === "resolved";
 
-    data.forEach((occurrence) => {
-      const row = document.createElement("div");
-      row.className = "table__row";
-
-      const createdAt = new Date(occurrence.created_at).toLocaleString("pt-BR");
-
-      row.innerHTML = `
-        <span>${occurrence.sku}</span>
-        <span>${occurrence.address}</span>
-        <span>${occurrence.area_label || "-"}</span>
-        <span>${occurrence.quantity}</span>
-        <span>${occurrence.status}</span>
-        <span>${createdAt}</span>
+      return `
+        <div class="table__row">
+          <span>${sku}</span>
+          <span>${address}</span>
+          <span>${area_label}</span>
+          <span>${quantity}</span>
+          <span>
+            <span class="status-badge status-badge--${status}">
+            ${status}</span>
+          </span>
+          <span>${createdAt}</span>
+          <span>
+          <button class="btn--resolve" data-id="${occurrence.id}" ${isResolved ? "disabled" : ""}>${isResolved ? "Resolvida" : "Resolver"}</button>
+          </span>
+          </div>
       `;
+    }).join("");
 
-      occurrencesList.appendChild(row);
+    occurrencesList.innerHTML = rowsHtml;
+
+    const resolveButtons = document.querySelectorAll(".btn--resolve");
+
+    resolveButtons.forEach((button) => {
+      if (button.disabled) return;
+
+      button.addEventListener("click", async () => {
+        const occurrenceId = button.dataset.id;
+          await
+          resolveOccurrence(occurrenceId);
+      });
     });
   }
 
