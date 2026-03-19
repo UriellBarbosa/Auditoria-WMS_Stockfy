@@ -25,6 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+   address?.addEventListener("input", () => {
+    address.value = address.value.toUpperCase();
+  });
+
   // ======================== Banner ======================
   function hideSendBanner() {
     if (!sendBanner || !sendBannerText) return;
@@ -245,7 +249,7 @@ async function loadAreas() {
       area_id: areaSelect?.value || null,
       area_label: selectedOption ? selectedOption.textContent : null,
       sku: sku.value.trim(),
-      address: address.value.trim(),
+      address: address.value.trim().toUpperCase(),
       quantity: Number(qty.value.trim()),
       note: document.getElementById("note")?.value.trim() || null,
       status: "pending",

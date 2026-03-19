@@ -233,6 +233,11 @@ font-size: 12px;
 
 /* ========================== MODO OPERAÇÃO - TELA DO OPERADOR ======================== */
 
+/* Texto em caixa alta
+#address {
+    text-transform: uppercase;
+}*/
+
 /* Destacar para o campos de quantidade */
 #qty {
     font-size: 18px;
