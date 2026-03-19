@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .toLocaleString("pt-BR") : "-";
       const sku = occurrence.sku ?? "-";
       const address = occurrence.address ?? "-";
-      const areaLabel = occurrence.areas?.name || occurrence.areaLabel || "-";
+      const areaLabel = occurrence.areas?.name || occurrence.area_label || "-";
       const quantity = occurrence.quantity ?? "-";
       const note = occurrence.note?.trim() ? occurrence.note : "-";
       const status = occurrence.status ?? "pending";
@@ -118,8 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       button.addEventListener("click", async () => {
         const occurrenceId = button.dataset.id;
-          await
-          resolveOccurrence(occurrenceId);
+          await resolveOccurrence(occurrenceId);
       });
     });
   }
@@ -137,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (skuFilter) {
       filteredOccurrences = filteredOccurrences.filter((occurrence) => (occurrence.sku || "")
-    .toLowerCase().incluses(skuFilter)
+    .toLowerCase().includes(skuFilter)
       );
     }
 
