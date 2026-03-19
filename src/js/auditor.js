@@ -1,19 +1,26 @@
 document.addEventListener("DOMContentLoaded", () => {
-  async function resolveOccurrence(Id) {
+  // Variável para armazenar todas as ocorrências carregadas
+  let allOccurrences = [];
+
+  // Função para resolver uma ocorrência
+  async function resolveOccurrence(id) {
     const { error } = await window.supabaseClient
       .from("occurrences")
       .update({ status: "resolved" })
-      .eq("id", Id);
+      .eq("id", id);
 
+      // Verificar se houve erro na atualização
     if (error) {
       console.error("Erro ao resolver ocorrência:", error.message);
       alert("Erro ao resolver ocorrência. Tente novamente.");
       return;
     }
 
+    // Recarregar as ocorrências após resolver
     loadOccurrences();
   }
 
+  // Função para carregar as ocorrências do banco de dados
   async function loadOccurrences() {
     const profile = window.currentProfile;
     const occurrencesList = document.getElementById("occurrencesList");
@@ -22,8 +29,10 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("currentProfile:", profile);
     console.log("occurrencesList encontrado:", !!occurrencesList);
 
+    // Verificar se o perfil e a lista de ocorrências estão disponíveis
     if (!profile || !occurrencesList) return;
 
+    // Buscar as ocorrências do banco de dados
     const { data, error } = await window.supabaseClient
       .from("occurrences")
       .select(`*, areas (name)`)
@@ -33,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("occurrences data:", data);
     console.log("occurrences error:", error);
 
+    // Limpar a lista antes de carregar os dados
     if (error) {
       console.error("Erro ao carregar ocorrências:", error.message);
       occurrencesList.innerHTML = `
@@ -42,8 +52,20 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
       return;
     }
+  
+    // Armazenar as ocorrências carregadas
+    allOccurrences = data || [];
 
-    if (!data || !data.length === 0) {
+    applyFilters();
+  }
+
+    // função que renderiza a tabela
+    function renderOccurrences(data) {
+      const occurrencesList = document.getElementById("occurrencesList");
+
+      if (!occurrencesList) return;
+
+      if (!data || data.length === 0) {
       occurrencesList.innerHTML = `
         <div class="table__empty">
           Nenhuma ocorrência encontrada
@@ -51,13 +73,13 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
       return;
     }
-
-    const rowsHtml = data.map((occurrence) => {
+    
+      const rowsHtml = data.map((occurrence) => {
       const createdAt = occurrence.created_at ? new Date(occurrence.created_at)
       .toLocaleString("pt-BR") : "-";
       const sku = occurrence.sku ?? "-";
       const address = occurrence.address ?? "-";
-      const area_label = occurrence.areas?.name || occurrence.area_label || "-";
+      const areaLabel = occurrence.areas?.name || occurrence.areaLabel || "-";
       const quantity = occurrence.quantity ?? "-";
       const note = occurrence.note?.trim() ? occurrence.note : "-";
       const status = occurrence.status ?? "pending";
@@ -69,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="table__row">
           <span>${sku}</span>
           <span>${address}</span>
-          <span>${area_label}</span>
+          <span>${areaLabel}</span>
           <span>${quantity}</span>
           <span>${note}</span>
           <span>
@@ -78,14 +100,17 @@ document.addEventListener("DOMContentLoaded", () => {
           </span>
           <span>${createdAt}</span>
           <span>
-          <button class="btn--resolve" data-id="${occurrence.id}" ${isResolved ? "disabled" : ""}>${isResolved ? "Resolvida" : "Resolver"}</button>
+          <button class="btn--resolve" data-id="${occurrence.id}" ${isResolved ? "disabled" : ""}>${isResolved ? "Resolvida" : "Resolver"}
+          </button>
           </span>
           </div>
       `;
     }).join("");
 
+    // Atualizar o conteúdo da lista de ocorrências
     occurrencesList.innerHTML = rowsHtml;
 
+    // Adicionar event listeners aos botões de resolver
     const resolveButtons = document.querySelectorAll(".btn--resolve");
 
     resolveButtons.forEach((button) => {
@@ -98,6 +123,29 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+
+  // Função para aplicar os filtros de status e SKU
+  function applyFilters() {
+    const statusFilter = document.getElementById("statusFilter")?.value || "all";
+    const skuFilter = document.getElementById("skuFilter")?.value.trim().toLowerCase() || "";
+
+    let filteredOccurrences = [...allOccurrences];
+
+    if (statusFilter !== "all") {
+      filteredOccurrences = filteredOccurrences.filter((occurrence) => occurrence.status === statusFilter);
+    }
+
+    if (skuFilter) {
+      filteredOccurrences = filteredOccurrences.filter((occurrence) => (occurrence.sku || "")
+    .toLowerCase().incluses(skuFilter)
+      );
+    }
+
+    renderOccurrences(filteredOccurrences);
+    }
+
+  document.getElementById("statusFilter")?.addEventListener("change", applyFilters);
+  document.getElementById("skuFilter")?.addEventListener("input", applyFilters);
 
   if (window.currentProfile) {
     loadOccurrences();

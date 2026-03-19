@@ -634,6 +634,12 @@ font-size: 12px;
   background: rgba(255, 255, 255, 0.2);
 }
 
+.auditor-filters {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
 @media (max-width: 768px) {
   .page--content {
     padding: 20px;
@@ -647,6 +653,9 @@ font-size: 12px;
   .table__row {
     min-width: 1100px;
   }
+  .auditor-filters {
+    grid-template-columns: 1fr;
+}
 }
 
 .status-badge {

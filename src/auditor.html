@@ -17,8 +17,10 @@
     <span class="banner__message">Sistema online</span>
   </div>
 
+  <!-- Layout principal -->
   <div class="app-layout">
 
+    <!-- Barra lateral de navegação -->
     <aside class="sidebar">
 
       <div class="sidebar__brand">
@@ -27,6 +29,7 @@
 
       </div>
 
+      <!-- Links de navegação -->
       <nav class="sidebar__nav" aria-label="Menu principal">
 
         <a href="operador.html" class="sidebar__link">Operador</a>
@@ -35,6 +38,7 @@
 
       </nav>
 
+      <!-- Rodapé da barra lateral -->
       <div class="sidebar__footer">
 
         <button id="logoutButton" class="btn btn--ghost btn--sidebar" type="button">Sair</button>
@@ -43,28 +47,47 @@
 
     </aside>
 
+    <!-- Conteúdo principal -->
     <main class="page page--operator page--content">
 
+      <!-- Cabeçalho da página + Menu hamburguer -->
       <header class="app-header">
-
         <button id="menuToggle" class="menu-toggle" aria-label="Abrir menu">☰</button>
-
       </header>
 
       <section class="card card--wide card--panel" aria-labelledby="auditor-title">
 
         <header class="card__header">
-
           <h1 id="auditor-title" class="card__title">Ocorrências</h1>
-
           <p class="card__subtitle">Gerencie e visualize as ocorrências registradas no sistema.</p>
-
         </header>
 
+        <!-- Filtros de busca -->
+        <div class="auditor-filters">
+          <div class="form__group">
+            <h6 class="form__label">Filtros</h6>
+            <label class="form__label" for="statusFilter">Status</label>
+            <select class="form__input" id="statusFilter">
+              <option value="all">Todas</option>
+              <option value="pending">Pendente</option>
+              <option value="resolved">Resolvida</option>
+            </select>
+          </div>
+          <div class="form__group">
+            <label class="form__label" for="skuFilter">SKU</label>
+            <input
+            class="form__input"
+            id="skuFilter"
+            type="text"
+            placeholder="Digite o SKU"
+            autocomplet="off"
+            />
+          </div>
+        </div>
+
+        <!-- Tabela de ocorrências -->
         <div class="table">
-
           <div class="table__header">
-
             <span>SKU</span>
             <span>Endereço</span>
             <span>Área</span>
@@ -73,19 +96,18 @@
             <span>Status</span>
             <span>Data</span>
             <span>Ação</span>
-
           </div>
 
+          <!-- Corpo da tabela onde as ocorrências serão listadas -->
           <div id="occurrencesList" class="table__body">
 
             <!-- dados virão do banco -->
              
           </div>
-
         </div>
-
       </section>
-      
+
+      <!-- Rodapé da página -->
       <footer class = "footer">
                 <small>© WMS Modular • Módulo Auditoria</small>
             </footer>
@@ -94,6 +116,7 @@
 
   </div>
 
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
   <script src="js/network-status.js"></script>
