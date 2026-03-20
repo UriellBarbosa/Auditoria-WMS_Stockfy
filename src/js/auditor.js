@@ -123,7 +123,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return `
         <div class="table__row">
           <span>
-            <input type="checkbox" class="occurrence-checkbox" data-id="${occurrence.id}"/>
+            <input type="checkbox" class="occurrence-checkbox" data-id="${occurrence.id}"
+            ${isResolved ? "disabled" : ""}/>
           </span>
           <span>${sku}</span>
           <span>${address}</span>
@@ -190,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
       selectAll.checked = false;
 
       selectAll.onchange = () => {
-        const rowCheckboxes = document.querySelectorAll(".occurrence-checkbox");
+        const rowCheckboxes = document.querySelectorAll(".occurrence-checkbox:not(:disabled)");
 
         rowCheckboxes.forEach((checkbox) => {
           checkbox.checked = selectAll.checked;

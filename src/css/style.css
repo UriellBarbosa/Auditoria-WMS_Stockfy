@@ -545,6 +545,11 @@ font-size: 12px;
   overflow-x: auto;
 }
 
+.table input[type="checkbox"]:disabled {
+opacity: 0.4;
+cursor: not-allowed;
+}
+
 .table__body {
   display: flex;
   flex-direction: column;
