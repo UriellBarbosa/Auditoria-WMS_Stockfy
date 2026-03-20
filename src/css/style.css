@@ -648,6 +648,12 @@ font-size: 12px;
   background: rgba(255, 255, 255, 0.2);
 }
 
+.auditor-filters-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    margin: 0 0 8px 0;
+}
 .auditor-filters {
     display: grid;
     grid-template-columns: 220px 1fr;
