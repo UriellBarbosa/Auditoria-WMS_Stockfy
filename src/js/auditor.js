@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const {error} = await windows.supabaseClient
+    const {error} = await window.supabaseClient
     .from("occurrences")
     .update({ status: "resolved" })
     .in("id", selectedIds);
