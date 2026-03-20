@@ -21,14 +21,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function getSelectedOccurrenceIds() {
-    const selectedcheckboxes = document.querySelectorAll(".occurrence-checkbox:checked");
+    const selectedCheckboxes = document.querySelectorAll(".occurrence-checkbox:checked");
 
-    return
-    Array.from(selectedcheckboxes).map((checkbox) => checkbox.dataset.id);
+    return Array.from(selectedCheckboxes).map((checkbox) => checkbox.dataset.id);
   }
 
   async function resolveSelectedOccurrences() {
+    console.log("resolveSelectedOccurrences foi chamada");
+
     const selectedIds = getSelectedOccurrenceIds();
+
+    console.log("IDs selecionados:", selectedIds);
 
     if (!selectedIds.length) {
       alert("Selecione pelo menos uma ocorrência.");
