@@ -660,6 +660,12 @@ font-size: 12px;
     gap: 16px;
     margin-bottom: 20px;
 }
+
+.auditor-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
 @media (max-width: 768px) {
   .page--content {
     padding: 20px;

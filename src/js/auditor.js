@@ -20,6 +20,36 @@ document.addEventListener("DOMContentLoaded", () => {
     loadOccurrences();
   }
 
+  function getSelectedOccurrenceIds() {
+    const selectedcheckboxes = document.querySelectorAll(".occurrence-checkbox:checked");
+
+    return
+    Array.from(selectedcheckboxes).map((checkbox) => checkbox.dataset.id);
+  }
+
+  async function resolveSelectedOccurrences() {
+    const selectedIds = getSelectedOccurrenceIds();
+
+    if (!selectedIds.length) {
+      alert("Selecione pelo menos uma ocorrência.");
+      return;
+    }
+
+    const {error} = await windows.supabaseClient
+    .from("occurrences")
+    .update({ status: "resolved" })
+    .in("id", selectedIds);
+
+    if (error) {
+      console.error("Erro ao resolver ocorrências selecionadas:", error.message);
+      alert("Erro ao resolver ocorrências selecionadas.");
+      return;
+    }
+
+    loadOccurrences();
+    
+  }
+
   // Função para carregar as ocorrências do banco de dados
   async function loadOccurrences() {
     const profile = window.currentProfile;
@@ -148,6 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("statusFilter")?.addEventListener("change", applyFilters);
   document.getElementById("skuFilter")?.addEventListener("input", applyFilters);
+  document.getElementById("resolveSelectedButton")?.addEventListener("click", resolveSelectedOccurrences);
 
   // seleção de todas as checkboxes
     const selectAll = document.getElementById("selectAllOccurrences");
