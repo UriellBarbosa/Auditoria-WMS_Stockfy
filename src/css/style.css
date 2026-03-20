@@ -538,8 +538,10 @@ font-size: 12px;
   min-height: calc(100vh - 100px);
 }
 
-.table {
-  width: 100%;
+.table input [type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
   overflow-x: auto;
 }
 
@@ -552,6 +554,7 @@ font-size: 12px;
 .table__row {
   display: grid;
   grid-template-columns:
+    0.45fr  /* checkbox*/
     0.7fr   /* SKU */
     1.5fr   /* Endereço */
     0.6fr   /* Área */
@@ -590,6 +593,12 @@ font-size: 12px;
 .table__header span,
 .table__row span {
   text-align: left;
+}
+
+/* checkbox */
+.table__row span:nth-child(1),
+.table__header span:nth-child(1) {
+    text-align: center;
 }
 
 /* quantidade */

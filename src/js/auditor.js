@@ -89,6 +89,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       return `
         <div class="table__row">
+          <span>
+            <input type="checkbox" class="occurrence-checkbox" data-id="${occurrence.id}"/>
+          </span>
           <span>${sku}</span>
           <span>${address}</span>
           <span>${areaLabel}</span>
@@ -112,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Adicionar event listeners aos botões de resolver
     const resolveButtons = document.querySelectorAll(".btn--resolve");
-
+    
     resolveButtons.forEach((button) => {
       if (button.disabled) return;
 
@@ -146,11 +149,29 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("statusFilter")?.addEventListener("change", applyFilters);
   document.getElementById("skuFilter")?.addEventListener("input", applyFilters);
 
+  // seleção de todas as checkboxes
+    const selectAll = document.getElementById("selectAllOccurrences");
+
+    if (selectAll) {
+      selectAll.checked = false;
+
+      selectAll.onchange = () => {
+        const rowCheckboxes = document.querySelectorAll(".occurrence-checkbox");
+
+        rowCheckboxes.forEach((checkbox) => {
+          checkbox.checked = selectAll.checked;
+        });
+
+        console.log("selectAll clicado:", selectAll.checked);
+        console.log("checkboxes encontrados:", document.querySelectorAll(".occurrence-checkbox").length);
+      };
+    }
+
   if (window.currentProfile) {
     loadOccurrences();
   }
 
   document.addEventListener("profileLoaded", () => {
     loadOccurrences();
-  });
+    });
 });
