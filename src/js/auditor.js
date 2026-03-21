@@ -53,6 +53,24 @@ document.addEventListener("DOMContentLoaded", () => {
     
   }
 
+  // Ação em lote para seleção múltipla
+  function updateBulkActionsVisibility() {
+    const bulkActions = document.getElementById("bulkActions");
+    const selectedCount = document.getElementById("selectedCount");
+    const selectedIds = getSelectedOccurrenceIds();
+
+    if (!bulkActions || !selectedCount) return;
+
+    if (!selectedIds.length) {
+      bulkActions.classList.add("auditor-actions--hidden");
+      selectedCount.textContent = "0 selecionadas";
+      return;
+    }
+
+    bulkActions.classList.remove("auditor-actions--hidden");
+    selectedCount.textContent = `${selectedIds.length} selecionada(s)`;
+  }
+
   // Função para carregar as ocorrências do banco de dados
   async function loadOccurrences() {
     const profile = window.currentProfile;
@@ -156,8 +174,30 @@ document.addEventListener("DOMContentLoaded", () => {
       button.addEventListener("click", async () => {
         const occurrenceId = button.dataset.id;
           await resolveOccurrence(occurrenceId);
+      }); 
+    });
+
+    // Atualiza ação em lote para checbok individual
+    const rowCheckboxes = document.querySelectorAll(".occurrence-checkbox");
+
+    rowCheckboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", () => {
+        updateBulkActionsVisibility();
+
+        const selectableCheckboxes = document.querySelectorAll(".occurrence:not(:disabled)");
+        const checkedCheckboxes = document.querySelectorAll(".occurrence-checkbox:not(:disabled):checked");
+        const selectAll = document.getElementById("selectAllOccurrences");
+
+        if (selectAll) {
+          selectAll.checked = selectableCheckboxes.length > 0 &&
+          selectableCheckboxes.length ===
+          checkedCheckboxes;
+        }
       });
     });
+
+    // Garante que a barra de ação em lote esconda ao recarregar a tabela
+    updateBulkActionsVisibility();
   }
 
   // Função para aplicar os filtros de status e SKU
@@ -199,6 +239,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log("selectAll clicado:", selectAll.checked);
         console.log("checkboxes encontrados:", document.querySelectorAll(".occurrence-checkbox").length);
+
+        updateBulkActionsVisibility();
       };
     }
 
