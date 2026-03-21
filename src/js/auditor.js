@@ -18,14 +18,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Recarregar as ocorrências após resolver
     loadOccurrences();
+
   }
 
+  // função para selecionar os Ids de cada ocorrência
   function getSelectedOccurrenceIds() {
     const selectedCheckboxes = document.querySelectorAll(".occurrence-checkbox:checked");
 
     return Array.from(selectedCheckboxes).map((checkbox) => checkbox.dataset.id);
   }
 
+  // Função para resolver ocorrências selecionadas
   async function resolveSelectedOccurrences() {
     console.log("resolveSelectedOccurrences foi chamada");
 
@@ -51,6 +54,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loadOccurrences();
     
+  }
+
+  async function deleteSelectedOccurrences() {
+    const selectedIds = getSelectedOccurrenceIds();
+    
+    if (!selectedIds.length) {
+      alert("Selecione pelo menosuma ocorrência.");
+      return;
+    }
+
+    const { error } = await window.supabaseClient
+        .from("occurrences")
+        .delete()
+        .in("id", selectedIds);
+
+    if (error) {
+      console.error("Erro ao excluir ocorrências selecionadas:", error.message);
+      alert("Erro ao excluir ocorrências selecionadas.");
+      return;
+    }
+
+    loadOccurrences();
+
+  }
+
+  // Funções para controle do modal
+  function openDeleteModal() {
+    const deleteModal = document.getElementById("deleteModal");
+
+    deleteModal?.classList.remove("modal--hidden");
+  }
+
+  function closeDeleteModal() {
+    const deleteModal = document.getElementById("deleteModal");
+
+    deleteModal?.classList.add("modal--hidden");
   }
 
   // Ação em lote para seleção múltipla
@@ -198,6 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Garante que a barra de ação em lote esconda ao recarregar a tabela
     updateBulkActionsVisibility();
+
   }
 
   // Função para aplicar os filtros de status e SKU
@@ -218,11 +258,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     renderOccurrences(filteredOccurrences);
+
     }
 
+  // LISTENERS
   document.getElementById("statusFilter")?.addEventListener("change", applyFilters);
   document.getElementById("skuFilter")?.addEventListener("input", applyFilters);
   document.getElementById("resolveSelectedButton")?.addEventListener("click", resolveSelectedOccurrences);
+  document.getElementById("deleteSelectedButton")?.addEventListener("click", () => {
+    const selectedIds = getSelectedOccurrenceIds();
+
+    if (!selectedIds.length) {
+      alert("Selecione pelo menos uma ocorrência.");
+      return;
+    }
+
+    openDeleteModal();
+  });
+  document.getElementById("deleteModalCancel")?.addEventListener("click", closeDeleteModal);
+  document.getElementById("deleteModalConfirm")?.addEventListener("click", async () => {
+    await deleteSelectedOccurrences();
+
+    closeDeleteModal();
+  });
+document.getElementById("deleteModal")?.addEventListener("click", (event) => {
+  const target = event.target;
+
+  if (target instanceof HTMLElement && target.dataset.deleteClose === "true") {
+    closeDeleteModal();
+  }
+});
 
   // seleção de todas as checkboxes
     const selectAll = document.getElementById("selectAllOccurrences");
@@ -251,4 +316,5 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("profileLoaded", () => {
     loadOccurrences();
     });
+
 });

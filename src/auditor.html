@@ -94,6 +94,9 @@
           <button id="resolveSelectedButton" class="btn btn--primary" type="button">
             Resolver selecionadas
           </button>
+          <button id="deleteSelectedButton" class="btn btn--danger" type="button">
+            Excluir selecionadas
+          </button>
         </div>
       </div>
 
@@ -129,6 +132,22 @@
             
     </main>
 
+  </div>
+
+  <div id="deleteModal" class="modal modal--hidden" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+    <div class="modal__backdrop" data-delete-close="true"></div>
+
+    <div class="modal__content">
+      <h2 id="deleteModalTitle" class="modal__title">Confirmar exclusão</h2>
+      <p class="modal__text">
+        Tem certeza que deseja excluir a(s) ocorrência(s) selecionada(s)?
+      </p>
+
+      <div class="modal__actions">
+        <button id="deleteModalCancel" class="btn btn--ghost" type="button">Cancelar</button>
+        <button id="deleteModalConfirm" class="btn btn--danger" type="button">Excluir</button>
+      </div>
+    </div>
   </div>
 
   <!-- Scripts -->
