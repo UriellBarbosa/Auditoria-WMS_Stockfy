@@ -259,8 +259,7 @@ async function loadAreas() {
     if (!navigator.onLine) {
       const offlinePayload = {
         ...payload,
-        created_at_local: new
-      Date().toISOString(),};
+        created_at_local: new Date().toISOString(),};
       const offlineOccurrences = JSON.parse(localStorage.getItem("offline_occurrences")
       || "[]");
       offlineOccurrences.push(offlinePayload);
