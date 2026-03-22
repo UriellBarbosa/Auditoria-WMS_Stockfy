@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const banner = document.getElementById("netBanner") || document.getElementById("netbanner");
-    const text = banner?.querySelector(".banner__message") || banner?.querySelector(".bannet__text");
+    const text = banner?.querySelector(".banner__message") || banner?.querySelector(".banner__text");
 
     // Se a página não tiver uma banner não faz nada
     if (!banner || !text) return;
