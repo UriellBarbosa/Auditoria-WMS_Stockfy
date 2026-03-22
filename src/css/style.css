@@ -768,3 +768,48 @@ cursor: not-allowed;
 .btn--danger:hover {
     opacity: 0.9;
 }
+
+#deleteModalText {
+    line-height: 1.5;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.pagination__button {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination__button {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.pagination__button--active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+    font-weight: 600;
+}
+
+.pagination__button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #f1f5f9;
+}

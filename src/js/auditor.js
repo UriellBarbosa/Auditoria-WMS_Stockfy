@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   // Variável para armazenar todas as ocorrências carregadas
   let allOccurrences = [];
+  let currentPage = 1;
+  const itemsPerPage = 10;
 
   // Função para resolver uma ocorrência
   async function resolveOccurrence(id) {
@@ -27,6 +29,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return Array.from(selectedCheckboxes).map((checkbox) => checkbox.dataset.id);
   }
+
+// ------------------- MODAL DE CONFIRMAÇÃO (TEXTO) ---------------------
+
+  // Função para montar texto dinâmico no modal
+  function updateDeleteModalContent() {
+    const selectedIds = getSelectedOccurrenceIds();
+    const modalText = document.getElementById("deleteModalText");
+
+    console.log("ModalText:", modalText);
+    console.log("IDs selecionados:", selectedIds);
+
+    if (!modalText || !selectedIds.length) return;
+
+    const selectedOccurrences = allOccurrences.filter((occurrence) => selectedIds.includes(occurrence.id));
+
+    if (selectedOccurrences.length === 1) {
+      const occurrence = selectedOccurrences[0];
+      const areaLabel = occurrence.areas?.name || occurrence.area_label || "-";
+
+      modalText.innerHTML = `Tem certeza que deseja excluir esta ocorrência?<br><br><strong>SKU:</strong>
+      ${occurrence.sku ?? "-"}<br><strong>Endereço:</strong> ${occurrence.address ?? "-"}<br><strong>Área:</strong> ${areaLabel}`;
+      return;
+    }
+
+    modalText.innerHTML = `Tem certeza que deseja excluir <strong>${selectedOccurrences.length}</strong> ocorrência(s) selecionada(s)?`;
+  }
+
+// -------------------- NOTÕES DE RESOLUÇÃO -----------------------
 
   // Função para resolver ocorrências selecionadas
   async function resolveSelectedOccurrences() {
@@ -56,6 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
   }
 
+  // Função para excluir ocorrências selecionadas
   async function deleteSelectedOccurrences() {
     const selectedIds = getSelectedOccurrenceIds();
     
@@ -79,6 +110,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
+// ------------------- MODAL DE CONFIRMAÇÃO ----------------------
+
   // Funções para controle do modal
   function openDeleteModal() {
     const deleteModal = document.getElementById("deleteModal");
@@ -88,9 +121,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function closeDeleteModal() {
     const deleteModal = document.getElementById("deleteModal");
+    const modalText = document.getElementById("deleteModalText");
 
     deleteModal?.classList.add("modal--hidden");
+
+    if (modalText) {
+      modalText.textContent = "Tem certeza que deseja excluir a(s) ocorrência(s) selecionadas(?)"
+    }
   }
+
+// --------------- AÇÕES EM LOTE -----------------
 
   // Ação em lote para seleção múltipla
   function updateBulkActionsVisibility() {
@@ -109,6 +149,8 @@ document.addEventListener("DOMContentLoaded", () => {
     bulkActions.classList.remove("auditor-actions--hidden");
     selectedCount.textContent = `${selectedIds.length} selecionada(s)`;
   }
+
+// --------------- BANCO DE DADOS -------------------
 
   // Função para carregar as ocorrências do banco de dados
   async function loadOccurrences() {
@@ -148,6 +190,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     applyFilters();
   }
+
+// ---------------- TABELA -------------------
 
     // função que renderiza a tabela
     function renderOccurrences(data) {
@@ -240,6 +284,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
+// ------------- FILTROS --------------
+
   // Função para aplicar os filtros de status e SKU
   function applyFilters() {
     const statusFilter = document.getElementById("statusFilter")?.value || "all";
@@ -257,15 +303,95 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     }
 
-    renderOccurrences(filteredOccurrences);
+    const totalPages = Math.ceil(filteredOccurrences.length / itemsPerPage);
+
+    if (currentPage > totalPages && totalPages > 0) {
+      currentPage = totalPages;
+    }
+
+    if (totalPages === 0) {
+      currentPage = 1;
+    }
+
+    const paginatedOccurrences = paginateOccurrences(filteredOccurrences);
+
+    renderOccurrences(paginatedOccurrences);
+    renderPagination(filteredOccurrences);
 
     }
 
-  // LISTENERS
-  document.getElementById("statusFilter")?.addEventListener("change", applyFilters);
-  document.getElementById("skuFilter")?.addEventListener("input", applyFilters);
+// --------- PÁGINAS ---------
+
+  // Função que divide os dados por páginas
+  function paginateOccurrences(data) {
+    const starIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = starIndex + itemsPerPage;
+
+    return data.slice(starIndex, endIndex);
+  }
+
+  // Função que desenha os botões
+  function renderPagination(data) {
+    const pagination = document.getElementById("pagination");
+
+    if (!pagination) return;
+
+    const totalPages = Math.ceil(data.length / itemsPerPage);
+
+    if (totalPages <= 1) {
+      pagination.innerHTML = "";
+      return;
+    }
+
+    let buttonsHtml = `<button
+    class="pagination__button"
+    ${currentPage === 1 ? "disabled" : ""}
+    data-page="prev"> ← </button>`;
+
+    for (let page = 1; page <= totalPages; page++) {
+      buttonsHtml += `<button class="pagination__button ${page === currentPage ? "pagination__button--active" : ""}" data-page="${page}"> ${page}</button>`;
+    }
+
+  buttonsHtml += `<button
+    class="pagination__button"
+    ${currentPage === totalPages ? "disabled" : ""}
+    data-page="next"> → </button>`;
+
+    pagination.innerHTML = buttonsHtml;
+
+    pagination.querySelectorAll(".pagination__button").forEach((button) => {
+      button.addEventListener("click", () => {
+        const action = button.dataset.page;
+
+        if (action === "prev" && currentPage > 1) {
+          currentPage--;
+        } else if (action === "next" && currentPage < totalPages) {
+          currentPage++;
+        } else if (!isNaN(Number(action))) {
+          currentPage = Number(action);
+        }
+
+        applyFilters();
+      });
+    });
+  }
+
+  // ---------------- LISTENERS -------------------
+
+    // Botões de filtros
+  document.getElementById("statusFilter")?.addEventListener("change", () => {
+    currentPage = 1;
+    applyFilters();
+  });
+  document.getElementById("skuFilter")?.addEventListener("input", () => {
+    currentPage = 1;
+    applyFilters();
+  });
+    // Botão de resolver em lote
   document.getElementById("resolveSelectedButton")?.addEventListener("click", resolveSelectedOccurrences);
+    // Botão de excluir
   document.getElementById("deleteSelectedButton")?.addEventListener("click", () => {
+    console.log("Clique em excluir dectado");
     const selectedIds = getSelectedOccurrenceIds();
 
     if (!selectedIds.length) {
@@ -273,8 +399,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    updateDeleteModalContent();
+
+    console.log("Atualizando conteúdo do modal")
+
     openDeleteModal();
   });
+    // Botões do modal de confimação (excluir)
   document.getElementById("deleteModalCancel")?.addEventListener("click", closeDeleteModal);
   document.getElementById("deleteModalConfirm")?.addEventListener("click", async () => {
     await deleteSelectedOccurrences();
@@ -289,25 +420,27 @@ document.getElementById("deleteModal")?.addEventListener("click", (event) => {
   }
 });
 
-  // seleção de todas as checkboxes
-    const selectAll = document.getElementById("selectAllOccurrences");
+// ----------- CHECKBOX ----------------
 
-    if (selectAll) {
-      selectAll.checked = false;
+// seleção de todas as checkboxes
+  const selectAll = document.getElementById("selectAllOccurrences");
 
-      selectAll.onchange = () => {
-        const rowCheckboxes = document.querySelectorAll(".occurrence-checkbox:not(:disabled)");
+  if (selectAll) {
+    selectAll.checked = false;
 
-        rowCheckboxes.forEach((checkbox) => {
-          checkbox.checked = selectAll.checked;
-        });
+    selectAll.onchange = () => {
+      const rowCheckboxes = document.querySelectorAll(".occurrence-checkbox:not(:disabled)");
 
-        console.log("selectAll clicado:", selectAll.checked);
-        console.log("checkboxes encontrados:", document.querySelectorAll(".occurrence-checkbox").length);
+      rowCheckboxes.forEach((checkbox) => {
+        checkbox.checked = selectAll.checked;
+      });
 
-        updateBulkActionsVisibility();
-      };
-    }
+      console.log("selectAll clicado:", selectAll.checked);
+      console.log("checkboxes encontrados:", document.querySelectorAll(".occurrence-checkbox").length);
+
+      updateBulkActionsVisibility();
+    };
+  }
 
   if (window.currentProfile) {
     loadOccurrences();
