@@ -240,6 +240,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const note = occurrence.note?.trim() ? occurrence.note : "-";
       const status = occurrence.status ?? "pending";
       const isResolved = status === "resolved";
+      const statusLabel = {
+        pending: "Pendente",
+        resolved: "Resolvida",
+      };
 
       console.log("Processando ocorrência:", occurrence);
 
@@ -256,7 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <span>${note}</span>
           <span>
             <span class="status-badge status-badge--${status}">
-            ${status}</span>
+            ${statusLabel[status] ?? status}</span>
           </span>
           <span>${createdAt}</span>
           <span>
