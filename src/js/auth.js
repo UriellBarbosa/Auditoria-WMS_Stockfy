@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // -------------- Tela de login com autenticação real do banco --------------
     const form = document.querySelector("form");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
@@ -8,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    // Redirecionamento para login autenticado
     form.addEventListener("submit", async (e) => {
         
         e.preventDefault()
@@ -27,6 +29,26 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
             console.log("Usuário logado:", data);
-            window.location.href = "operador.html";
+
+            const { data: profile, error: profileError } = await window.supabaseClient
+            .from("profiles")
+            .select("role")
+            .eq("id", data.user.id)
+            .single();
+
+            if (profileError || !profile) {
+                console.error("Erro ao buscar perfil:", profileError?.message);
+                alert("Erro ao carregar perfil. Tente novamente.");
+                return;
+            }
+
+            const redirectMap = {
+                operador: "operador.html",
+                auditor: "auditor.html",
+                administrador: "auditor.html",
+            };
+
+            const destination = redirectMap[profile.role] ?? "operador.html";
+            window.location.href = destination;
         });
     });
