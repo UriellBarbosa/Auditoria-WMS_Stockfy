@@ -1,4 +1,26 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // ===================== Banner =====================
+  const auditBanner = document.getElementById("auditBanner");
+  const auditBannerText = document.getElementById("auditBannerText");
+
+  function hideAuditBanner() {
+    if (!auditBanner || !auditBannerText) return;
+    auditBanner.classList.add("send-banner--hidden");
+    auditBanner.classList.remove("send-banner--sent", "send-banner--error");
+    auditBannerText.textContent = "";
+  }
+
+  function showAuditBanner(typeClass, message) {
+    if (!auditBanner || !auditBannerText) return;
+    auditBanner.classList.remove("send-banner--hidden");
+    auditBanner.classList.remove("send-banner--sent", "send-banner--error");
+    auditBanner.classList.add(typeClass);
+    auditBannerText.textContent = message;
+
+    window.clearTimeout(showAuditBanner._t);
+    showAuditBanner._t = window.setTimeout(hideAuditBanner, 2500);
+  }
+  
   // Variável para armazenar todas as ocorrências carregadas
   let allOccurrences = [];
   let currentPage = 1;
@@ -14,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Verificar se houve erro na atualização
     if (error) {
       console.error("Erro ao resolver ocorrência:", error.message);
-      alert("Erro ao resolver ocorrência. Tente novamente.");
+      showAuditBanner("send-banner--error", "Erro ao resolver ocorrência. Tente novamente.");
       return;
     }
 
@@ -56,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     modalText.innerHTML = `Tem certeza que deseja excluir <strong>${selectedOccurrences.length}</strong> ocorrência(s) selecionada(s)?`;
   }
 
-// -------------------- NOTÕES DE RESOLUÇÃO -----------------------
+// -------------------- BOTÕES DE RESOLUÇÃO -----------------------
 
   // Função para resolver ocorrências selecionadas
   async function resolveSelectedOccurrences() {
@@ -67,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("IDs selecionados:", selectedIds);
 
     if (!selectedIds.length) {
-      alert("Selecione pelo menos uma ocorrência.");
+      showAuditBanner("send-banner--error", "Selecione pelo menos uma ocorrência.");
       return;
     }
 
@@ -78,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (error) {
       console.error("Erro ao resolver ocorrências selecionadas:", error.message);
-      alert("Erro ao resolver ocorrências selecionadas.");
+      showAuditBanner("send-banner--error", "Erro ao resolver ocorrências selecionadas.");
       return;
     }
 
@@ -91,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedIds = getSelectedOccurrenceIds();
     
     if (!selectedIds.length) {
-      alert("Selecione pelo menosuma ocorrência.");
+      showAuditBanner("send-banner--error", "Selecione pelo menos uma ocorrência.");
       return;
     }
 
@@ -102,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (error) {
       console.error("Erro ao excluir ocorrências selecionadas:", error.message);
-      alert("Erro ao excluir ocorrências selecionadas.");
+      showAuditBanner("send-banner--error", "Erro ao excluir ocorrências selecionadas.");
       return;
     }
 
@@ -130,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-// --------------- AÇÕES EM LOTE -----------------
+// ------------------- AÇÕES EM LOTE ----------------------
 
   // Ação em lote para seleção múltipla
   function updateBulkActionsVisibility() {
@@ -150,7 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
     selectedCount.textContent = `${selectedIds.length} selecionada(s)`;
   }
 
-// --------------- BANCO DE DADOS -------------------
+// --------------------- BANCO DE DADOS -------------------------
 
   // Função para carregar as ocorrências do banco de dados
   async function loadOccurrences() {
@@ -191,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
     applyFilters();
   }
 
-// ---------------- TABELA -------------------
+// --------------------- TABELA ------------------------
 
     // função que renderiza a tabela
     function renderOccurrences(data) {
@@ -284,7 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
-// ------------- FILTROS --------------
+// -------------------- FILTROS ---------------------
 
   // Função para aplicar os filtros de status e SKU
   function applyFilters() {
@@ -320,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-// --------- PÁGINAS ---------
+// ------------------ PÁGINAS ------------------
 
   // Função que divide os dados por páginas
   function paginateOccurrences(data) {
@@ -376,7 +398,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ---------------- LISTENERS -------------------
+  // ---------------------- LISTENERS -------------------------
 
     // Botões de filtros
   document.getElementById("statusFilter")?.addEventListener("change", () => {
@@ -395,7 +417,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedIds = getSelectedOccurrenceIds();
 
     if (!selectedIds.length) {
-      alert("Selecione pelo menos uma ocorrência.");
+      showAuditBanner("send-banner--error", "Selecione pelo menos uma ocorrência.");
       return;
     }
 
@@ -420,7 +442,7 @@ document.getElementById("deleteModal")?.addEventListener("click", (event) => {
   }
 });
 
-// ----------- CHECKBOX ----------------
+// ------------------------ CHECKBOX ------------------------
 
 // seleção de todas as checkboxes
   const selectAll = document.getElementById("selectAllOccurrences");
