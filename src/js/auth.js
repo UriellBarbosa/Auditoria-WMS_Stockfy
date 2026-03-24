@@ -1,5 +1,27 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // -------------- Tela de login com autenticação real do banco --------------
+    // --------------------- Banner ---------------------
+  const loginBanner = document.getElementById("loginBanner");
+  const loginBannerText = document.getElementById("loginBannerText");
+
+  function hideLoginBanner() {
+    if (!loginBanner || !loginBannerText) return;
+    loginBanner.classList.add("send-banner--hidden");
+    loginBanner.classList.remove("send-banner--sent", "send-banner--error");
+    loginBannerText.textContent = "";
+  }
+
+  function showLoginBanner(typeClass, message) {
+    if (!loginBanner || !loginBannerText) return;
+    loginBanner.classList.remove("send-banner--hidden");
+    loginBanner.classList.remove("send-banner--sent", "send-banner--error");
+    loginBanner.classList.add(typeClass);
+    loginBannerText.textContent = message;
+
+    window.clearTimeout(showLoginBanner._t);
+    showLoginBanner._t = window.setTimeout(hideLoginBanner, 2500);
+  }
+
+    // ------------ Tela de login com autenticação real do banco --------------
     const form = document.querySelector("form");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
@@ -9,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // Redirecionamento para login autenticado
+    // Login autenticado
     form.addEventListener("submit", async (e) => {
         
         e.preventDefault()
@@ -24,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (error) {
             console.error("Erro no login:", error.message);
-            alert("Falha no login: " + error.message);
+            showLoginBanner("send-banner--error", "E-mail ou senha incorretos.");
             return;
         }
 
@@ -38,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (profileError || !profile) {
                 console.error("Erro ao buscar perfil:", profileError?.message);
-                alert("Erro ao carregar perfil. Tente novamente.");
+                showLoginBanner("send-banner--error", "Erro ao carregar perfil. Tente novamente.");
                 return;
             }
 
