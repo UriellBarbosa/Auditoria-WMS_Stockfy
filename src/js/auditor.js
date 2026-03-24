@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
     deleteModal?.classList.add("modal--hidden");
 
     if (modalText) {
-      modalText.textContent = "Tem certeza que deseja excluir a(s) ocorrência(s) selecionadas(?)"
+      modalText.textContent = "Tem certeza que deseja excluir a(s) ocorrência(s) selecionada(s)?"
     }
   }
 
