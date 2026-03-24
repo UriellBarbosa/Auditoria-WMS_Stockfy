@@ -267,14 +267,14 @@ document.addEventListener("DOMContentLoaded", () => {
       checkbox.addEventListener("change", () => {
         updateBulkActionsVisibility();
 
-        const selectableCheckboxes = document.querySelectorAll(".occurrence:not(:disabled)");
+        const selectableCheckboxes = document.querySelectorAll(".occurrence-checkbox:not(:disabled)");
         const checkedCheckboxes = document.querySelectorAll(".occurrence-checkbox:not(:disabled):checked");
         const selectAll = document.getElementById("selectAllOccurrences");
 
         if (selectAll) {
           selectAll.checked = selectableCheckboxes.length > 0 &&
           selectableCheckboxes.length ===
-          checkedCheckboxes;
+          checkedCheckboxes.length;
         }
       });
     });
