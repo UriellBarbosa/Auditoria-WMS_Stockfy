@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showLoginBanner._t = window.setTimeout(hideLoginBanner, 2500);
   }
 
-    // ------------ Tela de login com autenticação real do banco --------------
+    // ----------------- Tela de login com autenticação real ------------------
     const form = document.querySelector("form");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // Login autenticado
+    // Login autenticado 
     form.addEventListener("submit", async (e) => {
         
         e.preventDefault()
@@ -64,6 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            // redireciona para a página correta de acordo com o login
             const redirectMap = {
                 operador: "operador.html",
                 auditor: "auditor.html",
