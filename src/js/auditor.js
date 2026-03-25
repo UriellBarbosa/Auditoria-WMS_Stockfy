@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // ===================== Banner =====================
+  // ------------------------- Banner --------------------------
   const auditBanner = document.getElementById("auditBanner");
   const auditBannerText = document.getElementById("auditBannerText");
 
@@ -21,6 +21,29 @@ document.addEventListener("DOMContentLoaded", () => {
     showAuditBanner._t = window.setTimeout(hideAuditBanner, 2500);
   }
   
+  // --------------------- Audit Log ---------------------------
+  async function insertAuditLog(action, entityId, details = {}) {
+    const profile = window.currentProfile;
+
+    if (!profile) return;
+
+    const { error } = await window.supabaseClient
+      .from("audit_logs")
+      .insert({
+        company_id: profile.company_id,
+        user_id: profile.id,
+        action: action,
+        entity: "occurrences",
+        entity_id: entityId,
+        details: details,
+      });
+
+      if (error) {
+        console.warn("[audit_logs] Erro ao registrar log:", error.message);
+      }
+  }
+
+  // --------------------- Ocorrências -------------------------
   // Variável para armazenar todas as ocorrências carregadas
   let allOccurrences = [];
   let currentPage = 1;
@@ -39,6 +62,8 @@ document.addEventListener("DOMContentLoaded", () => {
       showAuditBanner("send-banner--error", "Erro ao resolver ocorrência. Tente novamente.");
       return;
     }
+
+    await insertAuditLog("resolve", id, { source: "individual" });
 
     // Recarregar as ocorrências após resolver
     loadOccurrences();
@@ -104,6 +129,10 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    for (const id of selectedIds) {
+      await insertAuditLog("resolve", id, { source: "bulk" });
+    }
+
     loadOccurrences();
     
   }
@@ -126,6 +155,10 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Erro ao excluir ocorrências selecionadas:", error.message);
       showAuditBanner("send-banner--error", "Erro ao excluir ocorrências selecionadas.");
       return;
+    }
+
+    for (const id of selectedIds) {
+      await insertAuditLog("delete", id, { source: "bulk" });
     }
 
     loadOccurrences();
