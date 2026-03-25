@@ -823,3 +823,81 @@ cursor: not-allowed;
     cursor: not-allowed;
     background: #f1f5f9;
 }
+
+/* ========================== DASHBOARD ========================== */
+
+.dashboard__period {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.btn--period {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.btn--period:hover {
+  background: var(--border);
+}
+
+.btn--period--active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.dashboard__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.dashboard__card {
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dashboard__card-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dashboard__card-value {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.dashboard__card--total {
+  background: #f1f5f9;
+  color: var(--accent);
+}
+
+.dashboard__card--pending {
+  background: #fff7ed;
+  color: #9a3412;
+}
+
+.dashboard__card--resolved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+@media (max-width: 768px) {
+  .dashboard__cards {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard__period {
+    flex-wrap: wrap;
+  }
+}

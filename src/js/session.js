@@ -41,9 +41,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const currentPage = window.location.pathname.split("/").pop();
 
     const allowedRoutes = {
-        operador: ["operador.html"],
-        auditor: ["auditor.html", "operador.html"],
-        administrador: ["auditor.html", "operador.html"],
+        operador: ["operador.html", "dasboard.html"],
+        auditor: ["auditor.html", "operador.html", "dashboard.html"],
+        administrador: ["auditor.html", "operador.html", "dashboard.html"],
     };
 
     const allwed = allowedRoutes[profile.role] ?? [];
