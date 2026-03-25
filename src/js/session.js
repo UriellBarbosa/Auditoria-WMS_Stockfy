@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const currentPage = window.location.pathname.split("/").pop();
 
     const allowedRoutes = {
-        operador: ["operador.html", "dasboard.html"],
+        operador: ["operador.html", "dashboard.html"],
         auditor: ["auditor.html", "operador.html", "dashboard.html"],
         administrador: ["auditor.html", "operador.html", "dashboard.html"],
     };

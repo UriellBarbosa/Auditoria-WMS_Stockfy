@@ -19,12 +19,12 @@ document.addEventListener("profileLoaded", () => {
         auditor: [
             { href: "operador.html", label: "Registrar Ocorrência" },
             { href: "auditor.html", label: "Ocorrências" },
-            { href: "dasboard.html" , label: "Minhas Ocorrências" },
+            { href: "dashboard.html" , label: "Minhas Ocorrências" },
         ],
         administrador: [
             { href: "operador.html", label: "Registrar Ocorrência" },
             { href: "auditor.html", label: "Ocorrências" },
-            { href: "dasboard.html", label: "Minhas Ocorrências"},
+            { href: "dashboard.html", label: "Minhas Ocorrências"},
             { href: "admin.html", label: "Usuários e Áreas" },
         ],
     };
