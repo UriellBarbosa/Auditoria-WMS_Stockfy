@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             administrador: "auditor.html",
         };
 
-        window.location.href = redirectMap[profile.role] ?? "operador.html",
+        window.location.href = redirectMap[profile.role] ?? "operador.html";
         return;
     }
 
