@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    // --------------- VERIFICAÇÃO DE SESSÃO INICIADA NO LOGIN --------------
     const {
         data: { session },
         error: sessionError,
@@ -35,6 +36,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     window.currentProfile = profile;
+
+    // Proteção de rotas por role
+    const currentPage = window.location.pathname.split("/").pop();
+
+    const allowedRoutes = {
+        operador: ["operador.html"],
+        auditor: ["auditor.html"],
+        administrador: ["auditor.html"],
+    };
+
+    const allwed = allowedRoutes[profile.role] ?? [];
+
+    if (!allwed.includes(currentPage)) {
+        const redirectMap = {
+            operador: "operador.html",
+            auditor: "auditor.html",
+            administrador: "auditor.html",
+        };
+
+        window.location.href = redirectMap[profile.role] ?? "operador.html",
+        return;
+    }
 
     document.dispatchEvent(new Event("profileLoaded"));
     
