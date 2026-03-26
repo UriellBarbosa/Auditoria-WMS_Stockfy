@@ -586,17 +586,17 @@ cursor: not-allowed;
 .table__row {
   display: grid;
   grid-template-columns:
-    0.45fr  /* checkbox*/
-    0.7fr   /* SKU */
-    1.5fr   /* Endereço */
-    0.6fr   /* Área */
+    40px  /* checkbox*/
+    0.8fr   /* SKU */
+    1.4fr   /* Endereço */
+    0.8fr   /* Área */
     0.7fr   /* Quantidade */
-    2.2fr   /* Observação */
-    0.8fr   /* Status */
+    2fr   /* Observação */
+    0.9fr   /* Status */
     1.3fr   /* Data */
-    0.8fr;  /* Ação */
-  gap: 14px;
-  padding: 14px 18px;
+    0.9fr;  /* Ação */
+  gap: 12px;
+  padding: 12px 16px;
   align-items: center;
 }
 
@@ -729,9 +729,14 @@ cursor: not-allowed;
     min-height: auto;
   }
 
+  .table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .table__header,
   .table__row {
-    min-width: 1100px;
+    min-width: 900px;
   }
 
   .auditor-actions {
@@ -907,6 +912,19 @@ cursor: not-allowed;
 .dashboard__card--resolved {
   background: #dcfce7;
   color: #166534;
+}
+
+.dashboard__table .table__header,
+.dashboard__table .table__row {
+  grid-template-columns:
+    0.8fr   /* SKU */
+    1.4fr   /* Endereço */
+    0.9fr   /* Área */
+    0.8fr   /* Quantidade */
+    0.9fr   /* Status */
+    1.5fr;  /* Data */
+  gap: 12px;
+  padding: 12px 16px;
 }
 
 @media (max-width: 768px) {
