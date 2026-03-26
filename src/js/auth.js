@@ -25,10 +25,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.querySelector("form");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
+    const showPassword = document.getElementById("showPassword");
 
     if (!form || !emailInput || !passwordInput) {
         console.error("Formulário de login ou campos de email/senha não encontrados.");
         return;
+    }
+
+    if (showPassword) {
+        showPassword.addEventListener("change", () => {
+            passwordInput.type = showPassword.checked ? "text" : "password";
+        });
     }
 
     // Login autenticado 

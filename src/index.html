@@ -30,6 +30,8 @@
 
                 <!-- Formulário de login-->
                 <form class = "form" action = "#" method = "post" autocomplete = "on" novalidate>
+
+                    <!-- Campo de usuário -->
                     <div class = "form__group">
                         <label class = "form__label" for = "email">Usuário</label>
                         <input
@@ -44,6 +46,7 @@
                             />
                     </div>
 
+                    <!-- Campo de senha -->
                     <div class = "form__group">
                         <label class = "form__label" for = "password">Senha</label>
                         <input
@@ -55,6 +58,10 @@
                             placeholder = "Digite sua senha"
                             required
                             />
+                        <label class="form__show-password">
+                        <input type="checkbox" id="showPassword"/>
+                            Mostrar senha
+                        </label>
                     </div>
                     
                     <!-- Banner de feedback do login -->
