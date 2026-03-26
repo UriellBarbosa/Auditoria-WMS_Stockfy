@@ -25,7 +25,7 @@ document.addEventListener("profileLoaded", () => {
             { href: "operador.html", label: "Registrar Ocorrência" },
             { href: "auditor.html", label: "Ocorrências" },
             { href: "dashboard.html", label: "Minhas Ocorrências"},
-            { href: "admin.html", label: "Usuários e Áreas" },
+            { href: "admin.html", label: "Configurações" },
         ],
     };
 
