@@ -80,13 +80,17 @@ async function loadDashboard() {
 
   if (error) {
     console.error("Erro ao carregar dashboard:", error.message);
-    hideSpinner();
     showDashBanner("send-banner--error", "Erro ao carregar ocorrências.");
+
+    if (document.getElementById("dashLoadingSpinner")) {
+      document.getElementById("dashLoadingSpinner").style.display = "none"
+    }
+    list.style.display = "flex";
+    list.innerHTML = `<div class="table__empty">Erro ao carregar ocorrências.</div>`
     return;
   }
 
   allOccurrences = data || [];
-  hideSpinner();
   updateCards();
   renderTable();
 }
@@ -105,8 +109,13 @@ async function loadDashboard() {
   // ===================== Tabela =====================
   function renderTable() {
     const list = document.getElementById("dashOccurrencesList");
+    const spinner = document.getElementById("dashLoadingSpinner")
 
     if (!list) return;
+
+    // Esconde spinner e mostra lista sempre que renderizar
+    if (spinner) spinner.style.display = "none";
+    list.style.display = "flex";
 
     const statusLabel = {
       pending: "Pendente",
