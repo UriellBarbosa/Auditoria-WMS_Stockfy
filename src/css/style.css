@@ -634,31 +634,31 @@ cursor: not-allowed;
 }
 
 /* quantidade */
-.table__row span:nth-child(4),
-.table__header span:nth-child(4) {
+.table__row span:nth-child(5),
+.table__header span:nth-child(5) {
   text-align: center;
 }
 
 /* status */
-.table__row span:nth-child(6),
-.table__header span:nth-child(6) {
-  text-align: center;
-}
-
-/* data */
 .table__row span:nth-child(7),
 .table__header span:nth-child(7) {
   text-align: center;
 }
 
-/* ação */
+/* data */
 .table__row span:nth-child(8),
 .table__header span:nth-child(8) {
   text-align: center;
 }
 
+/* ação */
+.table__row span:nth-child(9),
+.table__header span:nth-child(9) {
+  text-align: center;
+}
+
 /* observação */
-.table__row span:nth-child(5) {
+.table__row span:nth-child(6) {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.3;
