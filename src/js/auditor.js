@@ -21,6 +21,22 @@ document.addEventListener("DOMContentLoaded", () => {
     showAuditBanner._t = window.setTimeout(hideAuditBanner, 2500);
   }
   
+  // --------------------- SPINNER ------------------------
+  function showSpinner () {
+    const spinner = document.getElementById("loadingSpinner");
+    const list = document.getElementById("occurrencesList");
+
+    if (spinner) spinner.style.display = "flex";
+    if (list) list.style.display = "none";
+  }
+
+  function hideSpinner () {
+    const spinner = document.getElementById("loadingSpinner");
+    const list = document.getElementById("occurrencesList");
+
+    if (spinner) spinner.style.display = "none";
+    if (list) list.style.display = "flex";
+  }
   // --------------------- Audit Log ---------------------------
   async function insertAuditLog(action, entityId, details = {}) {
     const profile = window.currentProfile;
@@ -205,7 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
     selectedCount.textContent = `${selectedIds.length} selecionada(s)`;
   }
 
-// --------------------- BANCO DE DADOS -------------------------
+// --------------------- BANCO DE DADOS (OCORRÊNCIAS) -------------------------
 
   // Função para carregar as ocorrências do banco de dados
   async function loadOccurrences() {
@@ -218,6 +234,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Verificar se o perfil e a lista de ocorrências estão disponíveis
     if (!profile || !occurrencesList) return;
+
+    showSpinner();
 
     // Buscar as ocorrências do banco de dados
     const { data, error } = await window.supabaseClient
@@ -232,6 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Limpar a lista antes de carregar os dados
     if (error) {
       console.error("Erro ao carregar ocorrências:", error.message);
+      hideSpinner();
       occurrencesList.innerHTML = `
         <div class="table__empty">
           Erro ao carregar ocorrências
@@ -243,6 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Armazenar as ocorrências carregadas
     allOccurrences = data || [];
 
+    hideSpinner();
     applyFilters();
   }
 

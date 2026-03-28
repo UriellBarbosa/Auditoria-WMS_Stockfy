@@ -5,19 +5,19 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentPage = 1;
   const itemsPerPage = 10;
 
-  // ===================== Banner =====================
-  const dashBanner = document.getElementById("dashBanner");
-  const dashBannerText = document.getElementById("dashBannerText");
+// ===================== Banner =====================
+const dashBanner = document.getElementById("dashBanner");
+const dashBannerText = document.getElementById("dashBannerText");
 
-  function hideDashBanner() {
-    if (!dashBanner || !dashBannerText) return;
+function hideDashBanner() {
+  if (!dashBanner || !dashBannerText) return;
     dashBanner.classList.add("send-banner--hidden");
     dashBanner.classList.remove("send-banner--sent", "send-banner--error");
     dashBannerText.textContent = "";
-  }
+}
 
-  function showDashBanner(typeClass, message) {
-    if (!dashBanner || !dashBannerText) return;
+function showDashBanner(typeClass, message) {
+  if (!dashBanner || !dashBannerText) return;
     dashBanner.classList.remove("send-banner--hidden");
     dashBanner.classList.remove("send-banner--sent", "send-banner--error");
     dashBanner.classList.add(typeClass);
@@ -25,52 +25,71 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.clearTimeout(showDashBanner._t);
     showDashBanner._t = window.setTimeout(hideDashBanner, 2500);
-  }
+}
 
-  // ===================== Período =====================
-  function getDateRange(period) {
-    const now = new Date();
-    const start = new Date();
+// ===================== Spinner =====================
+function showSpinner() {
+  const spinner = document.getElementById("dashLoadingSpinner");
+  const list = document.getElementById("dashOccurrencesList");
+  if (spinner) spinner.style.display = "flex";
+  if (list) list.style.display = "none";
+}
 
-    if (period === "day") {
+function hideSpinner() {
+  const spinner = document.getElementById("dashLoadingSpinner");
+  const list = document.getElementById("dashOccurrencesList");
+  if (spinner) spinner.style.display = "none";
+  if (list) list.style.display = "flex";
+}
+
+// ===================== Período =====================
+function getDateRange(period) {
+  const now = new Date();
+  const start = new Date();
+
+  if (period === "day") {
       start.setHours(0, 0, 0, 0);
-    } else if (period === "week") {
+  } else if (period === "week") {
       start.setDate(now.getDate() - 7);
       start.setHours(0, 0, 0, 0);
-    } else if (period === "month") {
+  } else if (period === "month") {
       start.setDate(1);
       start.setHours(0, 0, 0, 0);
-    }
-
-    return start.toISOString();
   }
 
-  // ===================== Carregar dados =====================
-  async function loadDashboard() {
-    const profile = window.currentProfile;
-    const list = document.getElementById("dashOccurrencesList");
+  return start.toISOString();
+}
 
-    if (!profile || !list) return;
+// ===================== Carregar dados =====================
+async function loadDashboard() {
+  const profile = window.currentProfile;
+  const list = document.getElementById("dashOccurrencesList");
 
-    const startDate = getDateRange(currentPeriod);
+  if (!profile || !list) return;
 
-    const { data, error } = await window.supabaseClient
-      .from("occurrences")
-      .select("*, areas(name)")
-      .eq("created_by", profile.id)
-      .gte("created_at", startDate)
-      .order("created_at", { ascending: false });
+  showSpinner();
 
-    if (error) {
-      console.error("Erro ao carregar dashboard:", error.message);
-      showDashBanner("send-banner--error", "Erro ao carregar ocorrências.");
-      return;
-    }
+  const startDate = getDateRange(currentPeriod);
 
-    allOccurrences = data || [];
-    updateCards();
-    renderTable();
+  const { data, error } = await window.supabaseClient
+    .from("occurrences")
+    .select("*, areas(name)")
+    .eq("created_by", profile.id)
+    .gte("created_at", startDate)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Erro ao carregar dashboard:", error.message);
+    hideSpinner();
+    showDashBanner("send-banner--error", "Erro ao carregar ocorrências.");
+    return;
   }
+
+  allOccurrences = data || [];
+  hideSpinner();
+  updateCards();
+  renderTable();
+}
 
   // ===================== Cards =====================
   function updateCards() {
