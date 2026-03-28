@@ -275,6 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!occurrencesList) return;
 
       if (!data || data.length === 0) {
+        hideSpinner();
       occurrencesList.innerHTML = `
         <div class="table__empty">
           Nenhuma ocorrência encontrada
@@ -326,6 +327,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Atualizar o conteúdo da lista de ocorrências
     occurrencesList.innerHTML = rowsHtml;
+    hideSpinner();
 
     // Adicionar event listeners aos botões de resolver
     const resolveButtons = document.querySelectorAll(".btn--resolve");
@@ -367,6 +369,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Função para aplicar os filtros de status e SKU
   function applyFilters() {
+    showSpinner();
+
     const statusFilter = document.getElementById("statusFilter")?.value || "all";
     const skuFilter = document.getElementById("skuFilter")?.value.trim().toLowerCase() || "";
 
