@@ -11,23 +11,24 @@ document.addEventListener("profileLoaded", () => {
     }
 
     // Define links por role
+    const base = window.location.origin;
     const navLinks = {
-        operador: [
-           { href: "../modules/auditoria/operador.html", label: "Registrar Ocorrência" },
-           { href: "../modules/auditoria/dashboard.html", label: "Minhas Ocorrências" },
-        ],
-        auditor: [
-            { href: "../modules/auditoria/operador.html", label: "Registrar Ocorrência" },
-            { href: "../modules/auditoria/auditor.html", label: "Ocorrências" },
-            { href: "../modules/auditoria/dashboard.html" , label: "Minhas Ocorrências" },
-        ],
-        administrador: [
-            { href: "../modules/auditoria/operador.html", label: "Registrar Ocorrência" },
-            { href: "../modules/auditoria/auditor.html", label: "Ocorrências" },
-            { href: "../modules/auditoria/dashboard.html", label: "Minhas Ocorrências"},
-            { href: "../modules/auditoria/admin.html", label: "Configurações" },
-        ],
-    };
+    operador: [
+        { href: `${base}/src/modules/auditoria/operador.html`, label: "Registrar Ocorrência" },
+        { href: `${base}/src/modules/auditoria/dashboard.html`, label: "Minhas Ocorrências" },
+    ],
+    auditor: [
+        { href: `${base}/src/modules/auditoria/operador.html`, label: "Registrar Ocorrência" },
+        { href: `${base}/src/modules/auditoria/auditor.html`, label: "Ocorrências" },
+        { href: `${base}/src/modules/auditoria/dashboard.html`, label: "Minhas Ocorrências" },
+    ],
+    administrador: [
+        { href: `${base}/src/modules/auditoria/operador.html`, label: "Registrar Ocorrência" },
+        { href: `${base}/src/modules/auditoria/auditor.html`, label: "Ocorrências" },
+        { href: `${base}/src/modules/auditoria/dashboard.html`, label: "Minhas Ocorrências" },
+        { href: `${base}/src/modules/auditoria/admin.html`, label: "Usuários e Áreas" },
+    ],
+};
 
     const links = navLinks[profile.role] ?? navLinks.operador;
     const currentPage = window.location.pathname.split("/").pop();

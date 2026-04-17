@@ -49,13 +49,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const allwed = allowedRoutes[profile.role] ?? [];
 
     if (!allwed.includes(currentPage)) {
+        const base = window.location.origin;
         const redirectMap = {
-            operador: "../modules/auditoria/operador.html",
-            auditor: "../modules/auditoria/auditor.html",
-            administrador: "../modules/auditoria/auditor.html",
+            operador: `${base}/src/modules/auditoria/operador.html`,
+            auditor: `${base}/src/modules/auditoria/auditor.html`,
+            administrador: `${base}/src/modules/auditoria/auditor.html`,
         };
 
-        window.location.href = redirectMap[profile.role] ?? "../modules/auditoria/operador.html";
+        window.location.href = redirectMap[profile.role] ?? "../../modules/auditoria/operador.html";
         return;
     }
 

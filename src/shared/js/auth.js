@@ -72,14 +72,15 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // redireciona para a página correta de acordo com o login
+            const base = window.location.origin;
             const redirectMap = {
-                operador: "../modules/auditoria/operador.html",
-                auditor: "../modules/auditoria/auditor.html",
-                administrador: "../modules/auditoria/auditor.html",
+                operador: `${base}/src/modules/auditoria/operador.html`,
+                auditor: `${base}/src/modules/auditoria/auditor.html`,
+                administrador: `${base}/src/modules/auditoria/auditor.html`,
             };
 
             // Redireciona para a página correta com base no papel do usuário
-            const destination = redirectMap[profile.role] ?? "../modules/auditoria/operador.html";
+            const destination = redirectMap[profile.role] ?? "../../modules/auditoria/operador.html";
             window.location.href = destination;
         });
     });
