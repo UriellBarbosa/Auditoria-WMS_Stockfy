@@ -13,19 +13,19 @@ document.addEventListener("profileLoaded", () => {
     // Define links por role
     const navLinks = {
         operador: [
-           { href: "/src/modules/auditoria/operador.html", label: "Registrar Ocorrência" },
-           { href: "/src/modules/auditoria/dashboard.html", label: "Minhas Ocorrências" },
+           { href: "../modules/auditoria/operador.html", label: "Registrar Ocorrência" },
+           { href: "../modules/auditoria/dashboard.html", label: "Minhas Ocorrências" },
         ],
         auditor: [
-            { href: "/src/modules/auditoria/operador.html", label: "Registrar Ocorrência" },
-            { href: "/src/modules/auditoria/auditor.html", label: "Ocorrências" },
-            { href: "/src/modules/auditoria/dashboard.html" , label: "Minhas Ocorrências" },
+            { href: "../modules/auditoria/operador.html", label: "Registrar Ocorrência" },
+            { href: "../modules/auditoria/auditor.html", label: "Ocorrências" },
+            { href: "../modules/auditoria/dashboard.html" , label: "Minhas Ocorrências" },
         ],
         administrador: [
-            { href: "/src/modules/auditoria/operador.html", label: "Registrar Ocorrência" },
-            { href: "/src/modules/auditoria/auditor.html", label: "Ocorrências" },
-            { href: "/src/modules/auditoria/dashboard.html", label: "Minhas Ocorrências"},
-            { href: "/src/modules/auditoria/admin.html", label: "Configurações" },
+            { href: "../modules/auditoria/operador.html", label: "Registrar Ocorrência" },
+            { href: "../modules/auditoria/auditor.html", label: "Ocorrências" },
+            { href: "../modules/auditoria/dashboard.html", label: "Minhas Ocorrências"},
+            { href: "../modules/auditoria/admin.html", label: "Configurações" },
         ],
     };
 

@@ -41,21 +41,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     const currentPage = window.location.pathname.split("/").pop();
 
     const allowedRoutes = {
-        operador: ["/src/modules/auditoria/operador.html", "/src/modules/auditoria/dashboard.html"],
-        auditor: ["/src/modules/auditoria/auditor.html", "/src/modules/auditoria/operador.html", "/src/modules/auditoria/dashboard.html"],
-        administrador: ["/src/modules/auditoria/auditor.html", "/src/modules/auditoria/operador.html", "/src/modules/auditoria/dashboard.html"],
+        operador: ["../../modules/auditoria/operador.html", "../../modules/auditoria/dashboard.html"],
+        auditor: ["../../modules/auditoria/auditor.html", "../../modules/auditoria/operador.html", "../../modules/auditoria/dashboard.html"],
+        administrador: ["../../modules/auditoria/auditor.html", "../../modules/auditoria/operador.html", "../../modules/auditoria/dashboard.html"],
     };
 
     const allwed = allowedRoutes[profile.role] ?? [];
 
     if (!allwed.includes(currentPage)) {
         const redirectMap = {
-            operador: "/src/modules/auditoria/operador.html",
-            auditor: "/src/modules/auditoria/auditor.html",
-            administrador: "/src/modules/auditoria/admin.html",
+            operador: "../modules/auditoria/operador.html",
+            auditor: "../modules/auditoria/auditor.html",
+            administrador: "../modules/auditoria/admin.html",
         };
 
-        window.location.href = redirectMap[profile.role] ?? "operador.html";
+        window.location.href = redirectMap[profile.role] ?? "../modules/auditoria/operador.html";
         return;
     }
 
