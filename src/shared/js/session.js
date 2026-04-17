@@ -7,13 +7,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (sessionError) {
         console.error("Erro ao verificar sessão:", sessionError.message);
-        window.location.href = `${window.location.origin}/src/shared/index.html`;
+        window.location.href = `${window.location.origin}/shared/index.html`;
         return;
     }
 
     if (!session) {
         console.warn("Nenhuma sessão encontrada. Redirecionando para a página de login.");
-        window.location.href = `${window.location.origin}/src/shared/index.html`;
+        window.location.href = `${window.location.origin}/shared/index.html`;
         return;
     }
 
@@ -51,9 +51,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!allowed.includes(currentPage)) {
         const base = window.location.origin;
         const redirectMap = {
-            operador: `${base}/src/modules/auditoria/operador.html`,
-            auditor: `${base}/src/modules/auditoria/auditor.html`,
-            administrador: `${base}/src/modules/auditoria/auditor.html`,
+            operador: `${base}/modules/auditoria/operador.html`,
+            auditor: `${base}/modules/auditoria/auditor.html`,
+            administrador: `${base}/modules/auditoria/auditor.html`,
         };
 
         window.location.href = redirectMap[profile.role] ?? "../../modules/auditoria/operador.html";

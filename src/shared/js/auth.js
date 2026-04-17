@@ -74,9 +74,9 @@ document.addEventListener("DOMContentLoaded", () => {
             // redireciona para a página correta de acordo com o login
             const base = window.location.origin;
             const redirectMap = {
-                operador: `${base}/src/modules/auditoria/operador.html`,
-                auditor: `${base}/src/modules/auditoria/auditor.html`,
-                administrador: `${base}/src/modules/auditoria/auditor.html`,
+                operador: `${base}/modules/auditoria/operador.html`,
+                auditor: `${base}/modules/auditoria/auditor.html`,
+                administrador: `${base}/modules/auditoria/auditor.html`,
             };
 
             // Redireciona para a página correta com base no papel do usuário
