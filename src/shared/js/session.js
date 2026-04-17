@@ -7,13 +7,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (sessionError) {
         console.error("Erro ao verificar sessão:", sessionError.message);
-        window.location.href = "index.html";
+        window.location.href = `${window.location.origin}/src/shared/index.html`;
         return;
     }
 
     if (!session) {
         console.warn("Nenhuma sessão encontrada. Redirecionando para a página de login.");
-        window.location.href = "index.html";
+        window.location.href = `${window.location.origin}/src/shared/index.html`;
         return;
     }
 
@@ -41,14 +41,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const currentPage = window.location.pathname.split("/").pop();
 
     const allowedRoutes = {
-        operador: ["../../modules/auditoria/operador.html", "../../modules/auditoria/dashboard.html"],
-        auditor: ["../../modules/auditoria/auditor.html", "../../modules/auditoria/operador.html", "../../modules/auditoria/dashboard.html"],
-        administrador: ["../../modules/auditoria/auditor.html", "../../modules/auditoria/operador.html", "../../modules/auditoria/dashboard.html"],
+        operador: ["operador.html", "dashboard.html"],
+        auditor: ["auditor.html", "operador.html", "dashboard.html"],
+        administrador: ["auditor.html", "operador.html", "dashboard.html"],
     };
 
-    const allwed = allowedRoutes[profile.role] ?? [];
+    const allowed = allowedRoutes[profile.role] ?? [];
 
-    if (!allwed.includes(currentPage)) {
+    if (!allowed.includes(currentPage)) {
         const base = window.location.origin;
         const redirectMap = {
             operador: `${base}/src/modules/auditoria/operador.html`,

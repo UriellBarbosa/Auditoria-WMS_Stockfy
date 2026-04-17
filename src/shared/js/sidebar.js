@@ -35,8 +35,8 @@ document.addEventListener("profileLoaded", () => {
 
     if (!sidebarNav) return;
 
-    sidebarNav.innerHTML = links.map(({ href, label }) => `
-    <a href="${href}" class="sidebar__link ${currentPage === href ? "sidebar__link--active" : ""}"> ${label}
-    </a>
-    `).join("");
+    sidebarNav.innerHTML = links.map(({ href, label }) => {
+    const isActive = href.endsWith(currentPage);
+    return `<a href="${href}" class="sidebar__link ${isActive ? "sidebar__link--active" : ""}">${label}</a>`;
+    }).join("");
 });

@@ -18,6 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        window.location.href = "index.html";
+        window.location.href = `${window.location.origin}/src/shared/index.html`;
     });
 });
