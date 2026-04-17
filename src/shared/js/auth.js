@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const redirectMap = {
                 operador: "../modules/auditoria/operador.html",
                 auditor: "../modules/auditoria/auditor.html",
-                administrador: "../modules/auditoria/admin.html",
+                administrador: "../modules/auditoria/auditor.html",
             };
 
             // Redireciona para a página correta com base no papel do usuário

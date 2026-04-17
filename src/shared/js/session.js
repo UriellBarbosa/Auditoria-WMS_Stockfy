@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const redirectMap = {
             operador: "../modules/auditoria/operador.html",
             auditor: "../modules/auditoria/auditor.html",
-            administrador: "../modules/auditoria/admin.html",
+            administrador: "../modules/auditoria/auditor.html",
         };
 
         window.location.href = redirectMap[profile.role] ?? "../modules/auditoria/operador.html";
