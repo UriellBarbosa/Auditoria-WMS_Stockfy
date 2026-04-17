@@ -13,19 +13,19 @@ document.addEventListener("profileLoaded", () => {
     // Define links por role
     const navLinks = {
         operador: [
-           { href: "operador.html", label: "Registrar Ocorrência" },
-           { href: "dashboard.html", label: "Minhas Ocorrências" },
+           { href: "/src/modules/auditoria/operador.html", label: "Registrar Ocorrência" },
+           { href: "/src/modules/auditoria/dashboard.html", label: "Minhas Ocorrências" },
         ],
         auditor: [
-            { href: "operador.html", label: "Registrar Ocorrência" },
-            { href: "auditor.html", label: "Ocorrências" },
-            { href: "dashboard.html" , label: "Minhas Ocorrências" },
+            { href: "/src/modules/auditoria/operador.html", label: "Registrar Ocorrência" },
+            { href: "/src/modules/auditoria/auditor.html", label: "Ocorrências" },
+            { href: "/src/modules/auditoria/dashboard.html" , label: "Minhas Ocorrências" },
         ],
         administrador: [
-            { href: "operador.html", label: "Registrar Ocorrência" },
-            { href: "auditor.html", label: "Ocorrências" },
-            { href: "dashboard.html", label: "Minhas Ocorrências"},
-            { href: "admin.html", label: "Configurações" },
+            { href: "/src/modules/auditoria/operador.html", label: "Registrar Ocorrência" },
+            { href: "/src/modules/auditoria/auditor.html", label: "Ocorrências" },
+            { href: "/src/modules/auditoria/dashboard.html", label: "Minhas Ocorrências"},
+            { href: "/src/modules/auditoria/admin.html", label: "Configurações" },
         ],
     };
 
