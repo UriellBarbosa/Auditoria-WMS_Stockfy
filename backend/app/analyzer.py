@@ -1,32 +1,48 @@
-# Importações
 import pandas as pd
 import re
 from datetime import datetime
 
-# Padrões de operações normais do Stockfy
-# re.compile() cria um padrão de texto que pode ser reutilizado
+# ── Padrões de operações NORMAIS ──
+# re.IGNORECASE faz a busca ignorar maiúsculas/minúsculas
 PADROES_NORMAIS = [
-    re.compile(r"Separação da saida:\s*\d+", re.IGNORECASE),
-    re.compile(r"Finalização do volume \d+ da saída \d+", re.IGNORECASE),
-    re.compile(r"Recebimento", re.IGNORECASE),
+    re.compile(r"Separação da saida", re.IGNORECASE),
+    re.compile(r"Finalização do volume", re.IGNORECASE),
+    re.compile(r"Movimentação Coleta", re.IGNORECASE),
+    re.compile(r"Movimentação Entrega", re.IGNORECASE),
+    re.compile(r"Reabastecimento Coleta", re.IGNORECASE),
+    re.compile(r"Reabastecimento Entrega", re.IGNORECASE),
 ]
 
-def is_operacao_normal(mensagem: str) -> bool:
+# ── Padrões de operações SUSPEITAS (Stock Locator) ──
+PADROES_SUSPEITOS = [
+    re.compile(r"stock.?locator", re.IGNORECASE),
+]
+
+def classificar_operacao(mensagem: str) -> str:
     """
-    Verifica se uma mensagem de movimentação é uma operação normal.
-    Retorna True se for normal, False se for suspeita.
+    Classifica uma mensagem de movimentação em três categorias:
+    - "normal"   → operação esperada do dia a dia
+    - "suspeita" → Stock Locator identificado
+    - "unknown"  → operação desconhecida (novo padrão não mapeado)
     """
-    # Se a mensagem estiver vazia, considera suspeita
     if not mensagem or pd.isna(mensagem):
-        return False
-    
-    # Verifica se a mensagem bate com algum padrão normal
+        return "unknown"
+
+    mensagem_str = str(mensagem)
+
+    # Verifica primeiro se é suspeita
+    # (tem prioridade sobre qualquer outro padrão)
+    for padrao in PADROES_SUSPEITOS:
+        if padrao.search(mensagem_str):
+            return "suspeita"
+
+    # Verifica se é normal
     for padrao in PADROES_NORMAIS:
-        if padrao.search(str(mensagem)):
-            return True
-    
-    # Se não bateu com nenhum padrão, é suspeita
-    return False
+        if padrao.search(mensagem_str):
+            return "normal"
+
+    # Se não bateu com nenhum padrão conhecido
+    return "unknown"
 
 
 def analisar_relatorio(df: pd.DataFrame) -> dict:
@@ -36,11 +52,9 @@ def analisar_relatorio(df: pd.DataFrame) -> dict:
     """
 
     # ── 1. Normaliza os nomes das colunas ──
-    # Remove espaços extras e converte para minúsculas
-    # para evitar problemas com nomes de colunas diferentes
     df.columns = df.columns.str.strip().str.lower()
 
-    # ── 2. Verifica se as colunas necessárias existem ──
+    # ── 2. Verifica colunas necessárias ──
     colunas_necessarias = [
         "datahoramovimentacao",
         "usuario",
@@ -56,61 +70,74 @@ def analisar_relatorio(df: pd.DataFrame) -> dict:
     if colunas_faltando:
         return {
             "sucesso": False,
-            "erro": f"Colunas não encontradas no arquivo: {', '.join(colunas_faltando)}"
+            "erro": f"Colunas não encontradas: {', '.join(colunas_faltando)}"
         }
 
-    # ── 3. Converte a coluna de data para datetime ──
-    # datetime é um tipo de dado que representa datas e horas
+    # ── 3. Converte data e ordena ──
     df["datahoramovimentacao"] = pd.to_datetime(
         df["datahoramovimentacao"], errors="coerce"
     )
-
-    # ── 4. Ordena por data — do mais antigo para o mais recente ──
     df = df.sort_values("datahoramovimentacao", ascending=True)
 
-    # ── 5. Identifica operações suspeitas ──
-    # Cria uma nova coluna "normal" — True se for normal, False se for suspeita
-    df["normal"] = df["mensagem"].apply(is_operacao_normal)
+    # ── 4. Classifica cada operação ──
+    df["classificacao"] = df["mensagem"].apply(classificar_operacao)
 
-    # Filtra só as suspeitas
-    suspeitas = df[df["normal"] == False].copy()
+    # ── 5. Separa por classificação ──
+    suspeitas = df[df["classificacao"] == "suspeita"].copy()
+    unknowns = df[df["classificacao"] == "unknown"].copy()
 
-    # ── 6. Monta o resumo geral ──
-    total_movimentacoes = len(df)
-    total_suspeitas = len(suspeitas)
-    usuarios_unicos = df["usuario"].nunique()
+    # ── 6. Calcula impacto total do Stock Locator ──
+    # Separa adições e retiradas
+    adicoes = suspeitas[suspeitas["quantidade"] > 0]
+    retiradas = suspeitas[suspeitas["quantidade"] < 0]
 
-    # ── 7. Identifica quando começaram os problemas ──
+    impacto_total = int(suspeitas["quantidade"].sum()) if not suspeitas.empty else 0
+    total_adicionado = int(adicoes["quantidade"].sum()) if not adicoes.empty else 0
+    total_retirado = int(retiradas["quantidade"].sum()) if not retiradas.empty else 0
+
+    # ── 7. Primeira ocorrência suspeita ──
     primeira_suspeita = None
     if not suspeitas.empty:
-        primeira_suspeita = suspeitas.iloc[0]["datahoramovimentacao"]
-        if pd.notna(primeira_suspeita):
-            primeira_suspeita = primeira_suspeita.strftime("%d/%m/%Y %H:%M")
+        data = suspeitas.iloc[0]["datahoramovimentacao"]
+        if pd.notna(data):
+            primeira_suspeita = data.strftime("%d/%m/%Y %H:%M")
 
-    # ── 8. Ranking de usuários suspeitos ──
-    # Conta quantas operações suspeitas cada usuário fez
-    ranking_usuarios = (
-        suspeitas.groupby("usuario")
-        .size()
-        .reset_index(name="total_suspeitas")
-        .sort_values("total_suspeitas", ascending=False)
-        .head(10)
-        .to_dict(orient="records")
-    )
+    # ── 8. Ranking de usuários que usaram Stock Locator ──
+    ranking_usuarios = []
+    if not suspeitas.empty:
+        ranking_usuarios = (
+            suspeitas.groupby("usuario")
+            .agg(
+                total_operacoes=("quantidade", "count"),
+                total_adicionado=("quantidade", lambda x: int(x[x > 0].sum())),
+                total_retirado=("quantidade", lambda x: int(x[x < 0].sum())),
+            )
+            .reset_index()
+            .sort_values("total_operacoes", ascending=False)
+            .to_dict(orient="records")
+        )
 
-    # ── 9. Lista das operações suspeitas ──
+    # ── 9. Lista detalhada das operações suspeitas ──
     lista_suspeitas = []
     for _, row in suspeitas.iterrows():
         data = row["datahoramovimentacao"]
         lista_suspeitas.append({
             "data": data.strftime("%d/%m/%Y %H:%M") if pd.notna(data) else "-",
-            "usuario": str(row["usuario"]),
-            "mensagem": str(row["mensagem"]),
+            "usuario": str(row["usuario"]).strip(),
+            "mensagem": str(row["mensagem"]).strip(),
             "quantidade": int(row["quantidade"]) if pd.notna(row["quantidade"]) else 0,
-            "saldo_produto": int(row["saldoproduto"]) if pd.notna(row["saldoproduto"]) else 0,
+            "saldo_produto_apos": int(row["saldoproduto"]) if pd.notna(row["saldoproduto"]) else 0,
+            "endereco": str(row.get("endereco", "-")).strip(),
         })
 
-    # ── 10. Monta e retorna o resultado final ──
+    # ── 10. Operações desconhecidas ──
+    # Útil para identificar novos padrões não mapeados
+    lista_unknowns = []
+    if not unknowns.empty:
+        mensagens_unicas = unknowns["mensagem"].unique().tolist()
+        lista_unknowns = [str(m) for m in mensagens_unicas[:20]]
+
+    # ── 11. Retorna resultado completo ──
     return {
         "sucesso": True,
         "produto": {
@@ -118,12 +145,18 @@ def analisar_relatorio(df: pd.DataFrame) -> dict:
             "nome": str(df["produto"].iloc[0]),
         },
         "resumo": {
-            "total_movimentacoes": total_movimentacoes,
-            "total_suspeitas": total_suspeitas,
-            "percentual_suspeitas": round((total_suspeitas / total_movimentacoes) * 100, 1) if total_movimentacoes > 0 else 0,
-            "usuarios_envolvidos": usuarios_unicos,
-            "primeira_ocorrencia_suspeita": primeira_suspeita,
+            "total_movimentacoes": len(df),
+            "total_suspeitas": len(suspeitas),
+            "percentual_suspeitas": round(
+                (len(suspeitas) / len(df)) * 100, 1
+            ) if len(df) > 0 else 0,
+            "impacto_total_saldo": impacto_total,
+            "total_adicionado_stock_locator": total_adicionado,
+            "total_retirado_stock_locator": total_retirado,
+            "primeira_ocorrencia": primeira_suspeita,
+            "usuarios_envolvidos": len(ranking_usuarios),
         },
         "ranking_usuarios": ranking_usuarios,
         "operacoes_suspeitas": lista_suspeitas,
+        "operacoes_desconhecidas": lista_unknowns,
     }
