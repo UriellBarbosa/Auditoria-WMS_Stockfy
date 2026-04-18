@@ -130,7 +130,7 @@ def analisar_relatorio(df: pd.DataFrame) -> dict:
     for _, row in suspeitas.iterrows():
         data = row["datahoramovimentacao"]
         lista_suspeitas.append({
-            "data": data.strftime("%d/%m/%Y %H:%M") if pd.notna(data) else "-",
+            "data": data.isoformat() if pd.notna(data) else None,
             "usuario": str(row["usuario"]).strip(),
             "mensagem": str(row["mensagem"]).strip(),
             "quantidade": int(row["quantidade"]) if pd.notna(row["quantidade"]) else 0,
