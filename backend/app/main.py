@@ -3,6 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from io import BytesIO
 import pandas as pd
 from app.analyzer import analisar_relatorio
+from app.database import (
+    insert_analysis,
+    insert_findings,
+    insert_progress,
+    get_previous_analysis
+)
 
 # ── Instância da aplicação ──
 app = FastAPI(
@@ -31,52 +37,124 @@ def health_check():
         "version": "1.0.0"
     }
 
-# ── Endpoint de análise de relatório ──
+# ── Endpoint de análise ──
 @app.post("/analyze")
-async def analyze_report(file: UploadFile = File(...)):
+async def analyze_report(
+    file: UploadFile = File(...),
+    company_id: str = None,
+    user_id: str = None
+):
     """
-    Recebe um arquivo Excel (.xlsx) com o relatório de movimentações
-    do Stockfy e retorna a análise de divergências.
+    Recebe um arquivo Excel, processa, salva no banco e retorna a análise.
     """
 
-    # ── 1. Valida o tipo do arquivo ──
+    # ── 1. Valida o arquivo ──
     if not file.filename.endswith((".xlsx", ".xls")):
         raise HTTPException(
             status_code=400,
             detail="Arquivo inválido. Envie um arquivo Excel (.xlsx ou .xls)"
         )
 
-    # ── 2. Lê o conteúdo do arquivo em memória ──
+    # ── 2. Lê o arquivo ──
     conteudo = await file.read()
 
-    # ── 3. Tenta processar o arquivo ──
     try:
-        # BytesIO cria um arquivo virtual na memória
-        # para o Pandas conseguir ler sem salvar em disco
         arquivo_virtual = BytesIO(conteudo)
         df = pd.read_excel(arquivo_virtual)
-
     except Exception as e:
         raise HTTPException(
             status_code=422,
             detail=f"Erro ao ler o arquivo Excel: {str(e)}"
         )
 
-    # ── 4. Verifica se o arquivo tem dados ──
     if df.empty:
         raise HTTPException(
             status_code=422,
             detail="O arquivo está vazio."
         )
 
-    # ── 5. Chama o motor de análise ──
+    # ── 3. Processa a análise ──
     resultado = analisar_relatorio(df)
 
-    # ── 6. Verifica se a análise foi bem sucedida ──
     if not resultado.get("sucesso"):
         raise HTTPException(
             status_code=422,
             detail=resultado.get("erro", "Erro desconhecido na análise.")
         )
 
-    return resultado
+    # ── 4. Salva no banco (só se company_id e user_id foram fornecidos) ──
+    analysis_id = None
+
+    if company_id and user_id:
+        try:
+            resumo = resultado["resumo"]
+            produto = resultado["produto"]
+
+            # ── 4.1 Busca análise anterior para calcular tendência ──
+            anterior = await get_previous_analysis(company_id, produto["codigo"])
+
+            tendencia = "primeira_analise"
+            if anterior:
+                if resumo["total_suspeitas"] < anterior["total_suspeitas"]:
+                    tendencia = "melhora"
+                elif resumo["total_suspeitas"] > anterior["total_suspeitas"]:
+                    tendencia = "piora"
+                else:
+                    tendencia = "estavel"
+
+            # ── 4.2 Salva a análise principal ──
+            analysis = await insert_analysis({
+                "company_id": company_id,
+                "created_by": user_id,
+                "produto_codigo": produto["codigo"],
+                "produto_nome": produto["nome"],
+                "total_movimentacoes": resumo["total_movimentacoes"],
+                "total_suspeitas": resumo["total_suspeitas"],
+                "percentual_suspeitas": resumo["percentual_suspeitas"],
+                "impacto_total_saldo": resumo["impacto_total_saldo"],
+                "total_adicionado": resumo["total_adicionado_stock_locator"],
+                "total_retirado": abs(resumo["total_retirado_stock_locator"]),
+                "usuarios_envolvidos": resumo["usuarios_envolvidos"],
+            })
+
+            analysis_id = analysis["id"]
+
+            # ── 4.3 Salva as operações suspeitas ──
+            findings = [
+                {
+                    "analysis_id": analysis_id,
+                    "company_id": company_id,
+                    "data_operacao": op["data"],
+                    "usuario": op["usuario"],
+                    "mensagem": op["mensagem"],
+                    "quantidade": op["quantidade"],
+                    "saldo_produto_apos": op["saldo_produto_apos"],
+                    "endereco": op.get("endereco"),
+                }
+                for op in resultado["operacoes_suspeitas"]
+            ]
+
+            await insert_findings(findings)
+
+            # ── 4.4 Salva o progresso ──
+            await insert_progress({
+                "company_id": company_id,
+                "produto_codigo": produto["codigo"],
+                "analysis_id": analysis_id,
+                "total_suspeitas": resumo["total_suspeitas"],
+                "impacto_total_saldo": resumo["impacto_total_saldo"],
+                "usuarios_envolvidos": resumo["usuarios_envolvidos"],
+                "tendencia": tendencia,
+            })
+
+        except Exception as e:
+            # Se falhar ao salvar, ainda retorna o resultado da análise
+            # O usuário não perde o trabalho — só o histórico não é salvo
+            print(f"Erro ao salvar no banco: {e}")
+
+    # ── 5. Retorna o resultado ──
+    return {
+        **resultado,
+        "analysis_id": analysis_id,
+        "saved": analysis_id is not None
+    }
