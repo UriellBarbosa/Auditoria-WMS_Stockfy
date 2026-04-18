@@ -11,6 +11,11 @@ PADROES_NORMAIS = [
     re.compile(r"Movimentação Entrega", re.IGNORECASE),
     re.compile(r"Reabastecimento Coleta", re.IGNORECASE),
     re.compile(r"Reabastecimento Entrega", re.IGNORECASE),
+    re.compile(r"Ajuste saldo de estoque", re.IGNORECASE),
+    re.compile(r"Ajuste divergencia de estoque", re.IGNORECASE),
+    re.compile(r"Migração inicial de estoque", re.IGNORECASE),
+    re.compile(r"Movimentação entre endereços solicitado", re.IGNORECASE),
+    re.compile(r"Volta da saída", re.IGNORECASE),
 ]
 
 # ── Padrões de operações SUSPEITAS (Stock Locator) ──
