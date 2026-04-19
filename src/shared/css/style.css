@@ -1011,8 +1011,9 @@ cursor: not-allowed;
 }
 
 .analise-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
+  background: var(--muted);
 }
 
 .analise-section-title {
