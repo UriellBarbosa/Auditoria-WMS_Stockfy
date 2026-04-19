@@ -1,5 +1,12 @@
 import httpx
 from app.config import SUPABASE_URL, SUPABASE_SERVICE_KEY
+from app.database import (
+    insert_analysis,
+    insert_findings,
+    insert_progress,
+    get_previous_analysis,
+    update_analysis_recommendation
+)
 
 # Headers padrão para todas as requisições ao Supabase
 # A Service Role Key vai aqui — nunca no frontend
@@ -71,3 +78,16 @@ async def get_previous_analysis(company_id: str, produto_codigo: str) -> dict | 
         response.raise_for_status()
         data = response.json()
         return data[0] if data else None
+
+async def update_analysis_recommendation(analysis_id: str, recomendacao: str) -> None:
+    """
+    Atualiza a análise com a recomendação gerada pela IA.
+    """
+    async with httpx.AsyncClient() as client:
+        response = await client.patch(
+            f"{SUPABASE_URL}/rest/v1/analyses",
+            headers=HEADERS,
+            params={"id": f"eq.{analysis_id}"},
+            json={"recomendacao_ia": recomendacao}
+        )
+        response.raise_for_status()

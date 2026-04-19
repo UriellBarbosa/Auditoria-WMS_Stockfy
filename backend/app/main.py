@@ -9,6 +9,7 @@ from app.database import (
     insert_progress,
     get_previous_analysis
 )
+from app.ai import gerar_recomendacao
 
 # ── Instância da aplicação ──
 app = FastAPI(
@@ -146,6 +147,12 @@ async def analyze_report(
                 "usuarios_envolvidos": resumo["usuarios_envolvidos"],
                 "tendencia": tendencia,
             })
+
+            # ── 4.5 Gera recomendação com IA ──
+            recomendacao = await gerar_recomendacao(resultado)
+
+            # ── 4.6 Atualiza a análise com a recomendação ──
+            await update_analysis_recommendation(analysis_id, recomendacao)
 
         except Exception as e:
             # Se falhar ao salvar, ainda retorna o resultado da análise
