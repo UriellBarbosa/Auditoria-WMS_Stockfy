@@ -1091,3 +1091,27 @@ cursor: not-allowed;
     padding: 20px;
   }
 }
+
+.analise-ranking .table__body,
+.analise-filtros + .table .table__body {
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.analise-ranking .table__body::-webkit-scrollbar,
+.analise-filtros + .table .table__body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.analise-ranking .table__body::-webkit-scrollbar-track,
+.analise-filtros + .table .table__body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.analise-ranking .table__body::-webkit-scrollbar-thumb,
+.analise-filtros + .table .table__body::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
