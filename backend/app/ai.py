@@ -88,6 +88,12 @@ Responda em português do Brasil.
             data = response.json()
             return data["content"][0]["text"]
 
+    except httpx.HTTPStatusError as e:
+        print(f"Erro HTTP ao chamar API do Claude: {e}")
+        print(f"Resposta da API: {e.response.text}")
+        return "Não foi possível gerar a recomendação automática no momento."
     except Exception as e:
+        import traceback
         print(f"Erro ao chamar API do Claude: {e}")
+        print(traceback.format_exc())
         return "Não foi possível gerar a recomendação automática no momento."
