@@ -7,7 +7,8 @@ from app.database import (
     insert_analysis,
     insert_findings,
     insert_progress,
-    get_previous_analysis
+    get_previous_analysis,
+    update_analysis_recommendation
 )
 from app.ai import gerar_recomendacao
 

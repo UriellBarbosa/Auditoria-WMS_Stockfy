@@ -1,12 +1,5 @@
 import httpx
 from app.config import SUPABASE_URL, SUPABASE_SERVICE_KEY
-from app.database import (
-    insert_analysis,
-    insert_findings,
-    insert_progress,
-    get_previous_analysis,
-    update_analysis_recommendation
-)
 
 # Headers padrão para todas as requisições ao Supabase
 # A Service Role Key vai aqui — nunca no frontend
