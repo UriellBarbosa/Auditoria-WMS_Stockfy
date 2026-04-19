@@ -961,3 +961,132 @@ cursor: not-allowed;
         transform: rotate(360deg);
     }
 }
+
+/* ========================== ANÁLISE DE RELATÓRIOS ========================== */
+
+.analise-upload {
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  margin-bottom: 20px;
+}
+
+.analise-upload:hover {
+  border-color: var(--primary);
+}
+
+.analise-upload__label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.analise-upload__icon {
+  font-size: 32px;
+}
+
+.analise-upload__text {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.analise-upload__hint {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.analise-upload__input {
+  display: none;
+}
+
+.analise-btn {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.analise-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.analise-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 28px 0 16px;
+  color: var(--text);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.analise-produto {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.analise-produto strong {
+  color: var(--text);
+}
+
+.analise-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.analise-stat {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.analise-stat__label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.analise-stat__value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.analise-recomendacao {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 8px;
+}
+
+.analise-recomendacao__texto {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
+  white-space: pre-wrap;
+}
+
+.analise-filtros {
+  margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .analise-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .analise-upload {
+    padding: 20px;
+  }
+}

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Análise de Relatórios | WMS Modular</title>
+    <link rel="stylesheet" href="../../shared/css/style.css" />
+  </head>
+  <body>
+
+    <!-- Banner de status de conexão -->
+    <div id="netBanner" class="banner banner--online" role="status" aria-live="polite">
+      <span class="banner__dot"></span>
+      <span class="banner__message">Sistema online</span>
+    </div>
+
+    <div class="app-layout">
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar__brand">
+          <h1 class="sidebar__title">WMS Modular</h1>
+          <p class="sidebar__subtitle">Módulo Auditoria</p>
+          <p class="sidebar__user" id="sidebarUser">—</p>
+        </div>
+        <nav class="sidebar__nav" id="sidebarNav" aria-label="Menu principal"></nav>
+        <div class="sidebar__footer">
+          <button id="logoutButton" class="btn btn--ghost btn--sidebar" type="button">Sair</button>
+        </div>
+      </aside>
+
+      <!-- Conteúdo principal -->
+      <main class="page page--operator page--content">
+        <header class="app-header">
+          <button id="menuToggle" class="menu-toggle" aria-label="Abrir menu">☰</button>
+        </header>
+
+        <!-- Banner de feedback -->
+        <div id="analiseBanner" class="send-banner send-banner--hidden" role="status" aria-live="polite">
+          <span id="analiseBannerText" class="send-banner__text"></span>
+        </div>
+
+        <section class="card card--wide card--panel" aria-labelledby="analise-title">
+          <header class="card__header">
+            <h1 id="analise-title" class="card__title">Análise de Relatórios</h1>
+            <p class="card__subtitle">Faça o upload do relatório de movimentações do WMS para identificar divergências.</p>
+          </header>
+
+          <!-- Área de upload -->
+          <div class="analise-upload">
+            <label class="analise-upload__label" for="relatorioFile">
+              <span class="analise-upload__icon">📂</span>
+              <span class="analise-upload__text" id="uploadText">Clique para selecionar o arquivo Excel</span>
+              <span class="analise-upload__hint">.xlsx ou .xls — relatório de movimentações do WMS</span>
+            </label>
+            <input
+              type="file"
+              id="relatorioFile"
+              accept=".xlsx,.xls"
+              class="analise-upload__input"
+            />
+          </div>
+
+          <!-- Botão de análise -->
+          <button id="analisarBtn" class="btn btn--primary analise-btn" type="button" disabled>
+            Analisar Relatório
+          </button>
+
+          <!-- Spinner -->
+          <div id="analiseSpinner" class="spinner" style="display: none;">
+            <div class="spinner__circle"></div>
+          </div>
+
+          <!-- Resultado (escondido até análise ser feita) -->
+          <div id="analiseResultado" style="display: none;">
+
+            <!-- Cards de resumo -->
+            <div class="analise-resumo">
+              <h2 class="analise-section-title">Resumo da Análise</h2>
+
+              <div class="analise-produto" id="analiseProduto"></div>
+
+              <div class="dashboard__cards">
+                <div class="dashboard__card dashboard__card--total">
+                  <span class="dashboard__card-label">Total de Movimentações</span>
+                  <span class="dashboard__card-value" id="totalMovimentacoes">—</span>
+                </div>
+                <div class="dashboard__card dashboard__card--pending">
+                  <span class="dashboard__card-label">Operações Suspeitas</span>
+                  <span class="dashboard__card-value" id="totalSuspeitas">—</span>
+                </div>
+                <div class="dashboard__card dashboard__card--resolved">
+                  <span class="dashboard__card-label">Impacto no Saldo</span>
+                  <span class="dashboard__card-value" id="impactoSaldo">—</span>
+                </div>
+              </div>
+
+              <div class="analise-stats">
+                <div class="analise-stat">
+                  <span class="analise-stat__label">Primeira ocorrência</span>
+                  <span class="analise-stat__value" id="primeiraOcorrencia">—</span>
+                </div>
+                <div class="analise-stat">
+                  <span class="analise-stat__label">Usuários envolvidos</span>
+                  <span class="analise-stat__value" id="usuariosEnvolvidos">—</span>
+                </div>
+                <div class="analise-stat">
+                  <span class="analise-stat__label">Total adicionado</span>
+                  <span class="analise-stat__value" id="totalAdicionado">—</span>
+                </div>
+                <div class="analise-stat">
+                  <span class="analise-stat__label">Total retirado</span>
+                  <span class="analise-stat__value" id="totalRetirado">—</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recomendação IA -->
+            <div class="analise-recomendacao" id="analiseRecomendacao" style="display: none;">
+              <h2 class="analise-section-title">Recomendação de Ação</h2>
+              <div class="analise-recomendacao__texto" id="recomendacaoTexto"></div>
+            </div>
+
+            <!-- Ranking de usuários -->
+            <div class="analise-ranking">
+              <h2 class="analise-section-title">Ranking de Usuários Suspeitos</h2>
+              <div class="table dashboard__table">
+                <div class="table__header">
+                  <span>Usuário</span>
+                  <span>Operações</span>
+                  <span>Total Adicionado</span>
+                  <span>Total Retirado</span>
+                </div>
+                <div id="rankingList" class="table__body"></div>
+              </div>
+            </div>
+
+            <!-- Filtros das operações suspeitas -->
+            <div class="analise-filtros">
+              <h2 class="analise-section-title">Operações Suspeitas</h2>
+              <div class="auditor-filters">
+                <div class="form__group">
+                  <label class="form__label" for="tipoFilter">Tipo</label>
+                  <select class="form__input" id="tipoFilter">
+                    <option value="all">Todas</option>
+                    <option value="adicao">Apenas adições</option>
+                    <option value="retirada">Apenas retiradas</option>
+                  </select>
+                </div>
+                <div class="form__group">
+                  <label class="form__label" for="usuarioFilter">Usuário</label>
+                  <input class="form__input" type="text" id="usuarioFilter" placeholder="Filtrar por usuário" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Tabela de operações suspeitas -->
+            <div class="table dashboard__table">
+              <div class="table__header">
+                <span>Data</span>
+                <span>Usuário</span>
+                <span>Tipo</span>
+                <span>Quantidade</span>
+                <span>Saldo Após</span>
+                <span>Endereço</span>
+              </div>
+              <div id="suspeitasList" class="table__body"></div>
+            </div>
+
+          </div>
+        </section>
+
+        <footer class="footer">
+          <small>© WMS Modular • Módulo Auditoria</small>
+        </footer>
+      </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../shared/js/supabase.js"></script>
+    <script src="../../shared/js/network-status.js"></script>
+    <script src="../../shared/js/session.js"></script>
+    <script src="../../shared/js/sidebar.js"></script>
+    <script src="../../shared/js/menu.js"></script>
+    <script src="../../shared/js/logout.js"></script>
+    <script src="js/analise.js"></script>
+  </body>
+</html>

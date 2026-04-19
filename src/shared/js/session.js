@@ -42,8 +42,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const allowedRoutes = {
         operador: ["operador.html", "dashboard.html"],
-        auditor: ["auditor.html", "operador.html", "dashboard.html"],
-        administrador: ["auditor.html", "operador.html", "dashboard.html"],
+        auditor: ["auditor.html", "operador.html", "dashboard.html", "analise.html"],
+        administrador: ["auditor.html", "operador.html", "dashboard.html", "analise.html"],
     };
 
     const allowed = allowedRoutes[profile.role] ?? [];

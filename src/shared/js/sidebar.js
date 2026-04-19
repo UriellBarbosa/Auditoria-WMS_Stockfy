@@ -21,11 +21,13 @@ document.addEventListener("profileLoaded", () => {
         { href: `${base}/modules/auditoria/operador.html`, label: "Registrar Ocorrência" },
         { href: `${base}/modules/auditoria/auditor.html`, label: "Ocorrências" },
         { href: `${base}/modules/auditoria/dashboard.html`, label: "Minhas Ocorrências" },
+        { href: `${base}/modules/auditoria/analise.html`, label: "Análise de Relatórios" }
     ],
     administrador: [
         { href: `${base}/modules/auditoria/operador.html`, label: "Registrar Ocorrência" },
         { href: `${base}/modules/auditoria/auditor.html`, label: "Ocorrências" },
         { href: `${base}/modules/auditoria/dashboard.html`, label: "Minhas Ocorrências" },
+        { href: `${base}/modules/auditoria/analise.html`, label: "Análise de Relatórios" },
         { href: `${base}/modules/auditoria/admin.html`, label: "Usuários e Áreas" },
     ],
 };
